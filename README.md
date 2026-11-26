@@ -6,22 +6,31 @@ Schoolopdracht voor KBK Bouwgroep (Volendam). De app vergelijkt een asbestinvent
 
 ## Inloggen (demo)
 
-| Rol | E-mail | Wachtwoord |
-|---|---|---|
-| Projectbegeleider | raphael@example.com | kbk2026 |
-| Kantoor / werkvoorbereiding | kantoor@example.com | kbk2026 |
-| Asbestdeskundige | deskundige@example.com | kbk2026 |
+Wachtwoord voor alle accounts: `kbk2026`
 
-Dit is een demo-login zonder echte beveiliging. De gegevens blijven in je eigen browser (localStorage). Onder Instellingen zet "Demo terugzetten" alles weer op de beginstand.
+| Rol | Gebruikersnaam |
+|---|---|
+| Projectbegeleider KBK (op locatie) | raphael |
+| Werkvoorbereiding (kantoor KBK) | kantoor |
+| Asbestinventariseerder (extern bureau) | inventariseerder |
+| Asbestdeskundige | deskundige |
 
-## Het proces doorlopen
+Elke rol ziet zijn eigen tabblad. Dit is een demo-login zonder echte beveiliging; de voortgang blijft in je eigen browser.
 
-1. **Projectbegeleider** maakt de opname op locatie en deelt hem met kantoor.
-2. **Kantoor** vraagt de asbestinventarisatie aan.
-3. Het rapport komt binnen via Outlook (in de app: *Inbox rapporten*).
-4. De koppeltool koppelt het rapport automatisch aan de werkbon (op postcode of adres).
-5. De AI vergelijkt rapport en werkbon: asbesthoudend, niet-asbesthoudend, uitgesloten, niet onderzocht, geraakte materialen en achterliggende lagen.
-6. **Deskundige** beoordeelt en neemt een besluit (akkoord, sanering of aanvullend onderzoek).
+## Laten zien aan de docent
+
+Klik op het inlogscherm op **Rondleiding starten**. De app zet de demo op de beginstand en leidt je stap voor stap langs alle rollen, met een balk onderin die zegt wat je moet doen.
+
+## Het proces (zo veel mogelijk automatisch)
+
+1. **Projectbegeleider** neemt de werkzaamheden op in het tabblad Opname en deelt met één klik.
+2. **Kantoor** vraagt met één klik de inventarisatie aan.
+3. **Asbestbureau (extern)** inspecteert de woning en mailt alleen het rapport naar asbest@kbk-bouwgroep.nl (nagebootst Outlook-venster, geen echte mail).
+4. **AI-agent** (automatisch) leest de mail en de PDF, zoekt de opname op postcode en koppelt het rapport.
+5. **AsbestCheck AI** (automatisch) vergelijkt rapport en werkbon en zet de signalen klaar.
+6. **Deskundige** beoordeelt en maakt het besluit definitief.
+
+Een mens komt er alleen tussen bij onduidelijkheid (bijvoorbeeld geen opname gevonden) en voor het definitieve besluit. De AI zegt nooit dat iets veilig is.
 
 ## Bestanden
 
