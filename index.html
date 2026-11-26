@@ -1,0 +1,1586 @@
+<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KBK AsbestCheck AI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>/* VOICE work: interne tool voor projectbegeleiders, rustig en zakelijk
+   IDEA de KBK AsbestCheck AI zoals de docent hem zag: donkere zijbalk, witte kaarten, blauwe actieknop
+   PICTURE de vergelijkingstabel werkbon x rapport met signaal-pillen
+   COLOUR navy #0f1a2e zijbalk, wit/lichtgrijs werkvlak, KBK-blauw #1d4ed8, groen/oranje/rood voor status
+   TYPE Inter 800 titels + Inter tekst
+   LAYOUT laptop: zijbalk 290px + werkvlak; telefoon: zijbalk wordt bovenbalk, kaarten stapelen */
+:root{--navy:#0f1a2e;--navy2:#16233d;--bg:#f4f6fb;--card:#fff;--line:#e2e7f0;--ink:#0f172a;--ink2:#475569;--blue:#1d4ed8;--blue2:#2563eb;--bluebg:#e8f0fe;--green:#16a34a;--greenbg:#e9f9ef;--greenline:#b7ebc9;--red:#b91c1c;--redbg:#fde4e4;--orange:#c2410c;--orangebg:#ffedd5;--amberbg:#fff4d6;--amberline:#fbd88a;--grey:#475569;--greybg:#eceff4;color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow-x:clip}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:100%}
+.side{background:var(--navy);color:#fff;display:flex;flex-direction:column;padding:26px 18px 22px;position:sticky;top:0;height:100vh}
+.logo{display:flex;align-items:center;gap:12px;padding:0 8px 30px}
+.logo svg{flex:none}
+.logo b{display:block;font-size:30px;line-height:1;font-weight:800;letter-spacing:-.01em}
+.logo span{display:block;font-size:19px;font-weight:600;line-height:1.25}
+.logo span i{font-style:normal;color:#3b82f6}
+.nav{display:flex;flex-direction:column;gap:6px}
+.nav button{display:flex;align-items:center;gap:18px;background:none;border:0;color:#e6ebf5;padding:14px 20px;border-radius:10px;text-align:left;font-size:16px;font-weight:500}
+.nav button:hover{background:var(--navy2)}
+.nav button.on{background:var(--blue);color:#fff;font-weight:600;box-shadow:0 6px 18px rgba(29,78,216,.35)}
+.nav svg{width:26px;height:26px;flex:none}
+.safe{margin-top:auto;border:1px solid #26344f;border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:center}
+.safe b{display:block;font-size:14px}
+.safe small{color:#aab4c8;font-size:12.5px}
+main{padding:22px clamp(16px,3vw,40px) 0;display:flex;flex-direction:column;min-height:100vh}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}
+.top h1{margin:0;font-size:clamp(28px,3.2vw,40px);line-height:1.08;font-weight:800;letter-spacing:-.02em}
+.top p{margin:4px 0 0;color:#334155;font-size:17px}
+.user{display:flex;align-items:center;gap:10px;font-size:14.5px;white-space:nowrap;padding-top:6px}
+.avatar{width:34px;height:34px;border-radius:50%;background:#e2e8f0;display:grid;place-items:center;color:#64748b;border:1px solid #cbd5e1}
+.view{display:none;flex:1;flex-direction:column}
+.view.on{display:flex}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.uploads{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:16px;align-items:center}
+.file{display:flex;align-items:center;gap:14px;padding:14px 16px;min-height:76px}
+.file .meta{flex:1}
+.file b{display:block;font-size:15.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file small{color:var(--ink2);font-size:13.5px}
+.file .lbl{display:block;color:var(--blue);font-size:12.5px;font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--greenbg);color:#166534;font-weight:600;font-size:13.5px;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.badge.busy{background:var(--bluebg);color:var(--blue)}
+.badge.warn{background:var(--orangebg);color:var(--orange)}
+.x{background:none;border:0;color:#64748b;font-size:22px;line-height:1;padding:4px 6px;border-radius:6px}
+.x:hover{background:#f1f5f9}
+.vs{width:52px;height:52px;border-radius:50%;background:#dbe5f7;color:#1e3a8a;display:grid;place-items:center;font-weight:800;font-size:20px}
+.drop{border:2px dashed #b9c6dd;background:#fbfcfe;cursor:pointer;justify-content:center;text-align:center;flex-direction:column;gap:2px}
+.drop.over{border-color:var(--blue);background:var(--bluebg)}
+.drop b{color:var(--blue)}
+.koppel{font-size:13.5px;color:var(--ink2);margin:8px 2px 0}
+.koppel .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:8px;vertical-align:1px}
+.summary{display:flex;gap:14px;align-items:center;background:#e4eefc;border:1px solid #c8daf7;border-radius:12px;padding:14px 18px;margin:14px 0;font-size:15.5px}
+.summary svg{flex:none}
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.box{overflow:hidden;display:flex;flex-direction:column}
+.box h3{margin:0;background:var(--navy);color:#fff;font-size:16.5px;font-weight:700;padding:12px 18px;display:flex;gap:10px;align-items:center}
+.box ul{list-style:none;margin:0;padding:12px 18px 16px}
+.box li{display:flex;gap:10px;padding:3px 0;font-size:15px}
+.box li svg{flex:none;margin-top:3px}
+.box li.sub{padding-left:28px;color:#334155;font-size:14.5px}
+.dotli{width:9px;height:9px;border-radius:50%;background:#f59e0b;flex:none;margin-top:7px}
+.dotli.red{background:#dc2626}.dotli.grey{background:#94a3b8}.dotli.blue{background:#2563eb}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap}
+.pill.red{background:var(--redbg);color:var(--red)}
+.pill.blue{background:var(--bluebg);color:var(--blue)}
+.pill.orange{background:var(--orangebg);color:var(--orange)}
+.pill.grey{background:var(--greybg);color:var(--grey)}
+.pill.green{background:var(--greenbg);color:#166534}
+.pill.amber{background:#fde7b0;color:#92400e}
+.sec{padding:16px 18px;margin-top:14px}
+.sec h2{margin:0 0 10px;font-size:18px;font-weight:700}
+.sec h2 small{font-weight:500;color:var(--ink2);font-size:14px;margin-left:6px}
+.scroll{overflow-x:auto}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:14.5px}
+th{background:#eef2fa;text-align:left;font-weight:600;padding:9px 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+th:first-child{border-left:1px solid var(--line);border-radius:8px 0 0 0}
+th:last-child{border-right:1px solid var(--line);border-radius:0 8px 0 0}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{border-left:1px solid var(--line)}
+td:last-child{border-right:1px solid var(--line)}
+tr:last-child td:first-child{border-radius:0 0 0 8px}
+tr:last-child td:last-child{border-radius:0 0 8px 0}
+td .why{display:block;color:var(--ink2);font-size:13.5px;margin-top:4px}
+td .lyr{display:block;color:#7c3aed;font-size:13px}
+.hitl{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;margin:2px 0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5em,1fr));gap:10px;margin-bottom:12px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.tile b{display:block;font-size:28px;font-weight:800;line-height:1.1}
+.tile span{font-size:13.5px;color:var(--ink2)}
+.tile.red b{color:var(--red)}.tile.blue b{color:var(--blue)}.tile.orange b{color:var(--orange)}
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:12px}
+.concl{background:var(--greenbg);border:1px solid var(--greenline);border-radius:12px;padding:12px 16px;display:flex;gap:12px}
+.letop{background:var(--amberbg);border:1px solid var(--amberline);border-radius:12px;padding:12px 16px;display:flex;gap:12px}
+.concl b,.letop b{display:block;font-size:16px}
+.concl p,.letop p{margin:2px 0 0;font-size:14px}
+.advies{background:var(--greenbg);border:1px solid var(--greenline);border-radius:14px;padding:16px 18px;margin-top:14px;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:16px}
+.advies h2,.plan h2{margin:0 0 4px;font-size:21px;font-weight:700;display:flex;gap:12px;align-items:center}
+.advies>div>p{margin:0 0 8px}
+ol.num{list-style:none;margin:0;padding:0;counter-reset:n}
+ol.num li{counter-increment:n;display:flex;gap:10px;padding:4px 0;font-size:15px}
+ol.num li::before{content:counter(n);flex:none;width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;font-size:12.5px;font-weight:700;display:grid;place-items:center;margin-top:1px}
+.plan ol.num li::before{background:var(--blue)}
+.belangrijk{background:#d6f3e0;border-radius:12px;padding:14px 16px;align-self:start}
+.belangrijk b{display:flex;gap:8px;align-items:center;font-size:17px;margin-bottom:4px}
+.plan{margin-top:14px;display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:16px;padding:16px 18px;background:#f6f8ff;border:1px solid #dbe3f5;border-radius:14px}
+.plan .letop{flex-direction:column;align-self:start}
+.feedback{display:flex;align-items:center;gap:14px;margin:12px 2px;font-size:15px}
+.feedback button{background:none;border:0;padding:4px;border-radius:6px;color:#475569}
+.feedback button.on{color:var(--blue);background:var(--bluebg)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;font-weight:600;font-size:14.5px;display:inline-flex;gap:8px;align-items:center}
+.btn:hover{border-color:#b9c6dd}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.pri:hover{background:#1e40af}
+.btn.sm{padding:6px 10px;font-size:13.5px}
+.status{font-size:14px;color:#166534;font-weight:600}
+.chat{display:flex;flex-direction:column;gap:16px;margin-top:20px;padding-bottom:8px}
+.msg-u{display:flex;justify-content:flex-end;gap:12px;align-items:flex-start}
+.msg-u .bub{background:var(--blue);color:#fff;border-radius:16px 16px 4px 16px;padding:12px 18px;max-width:min(600px,85%);font-size:16px}
+.ua{width:42px;height:42px;border-radius:50%;background:var(--blue);display:grid;place-items:center;flex:none}
+.msg-a{display:flex;gap:16px;align-items:flex-start}
+.bot{width:56px;height:56px;border-radius:50%;background:#bfd3f5;display:grid;place-items:center;flex:none}
+.msg-a .card{padding:14px 18px;flex:1}
+.msg-a .card>b{display:block;font-size:16.5px;margin-bottom:2px}
+.ans p{margin:4px 0 8px}
+.ans ul,.ans ol{margin:4px 0 8px;padding-left:22px}
+.ans h4{margin:10px 0 4px;font-size:15.5px}
+.ans table{margin:6px 0 10px}
+.note{display:flex;gap:10px;align-items:center;background:#eaf2fd;border:1px solid #cfe0f8;border-radius:10px;padding:8px 12px;font-size:13.5px;margin-top:8px}
+.note b{color:#1e3a8a}
+.thinking{color:var(--ink2);font-style:italic}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 0 10px;padding-bottom:2px;scrollbar-width:thin}
+.chip{white-space:nowrap;flex:none;border:1px solid #c8d5ec;background:#fff;border-radius:999px;padding:6px 12px;font-size:13.5px;color:#1e3a8a}
+.chip:hover{background:var(--bluebg)}
+.composer{position:sticky;bottom:0;background:linear-gradient(to top,var(--bg) 80%,rgba(244,246,251,0));padding:12px 0 18px;margin-top:auto;border-top:1px solid var(--line)}
+.comp{display:flex;gap:10px;align-items:stretch}
+.attach{width:56px;border:1px solid var(--line);background:#fff;border-radius:12px;display:grid;place-items:center;color:#334155}
+.comp input[type=text]{flex:1;border:1px solid #cbd5e1;border-radius:12px;padding:13px 16px;font-size:16px;background:#fff}
+.comp input[type=text]:focus{outline:2px solid #93b4f5;border-color:var(--blue)}
+.send{background:var(--blue);color:#fff;border:0;border-radius:12px;padding:0 26px;font-weight:600;font-size:17px;display:flex;align-items:center;gap:10px}
+.send:hover{background:#1e40af}
+.send:disabled{opacity:.6}
+.empty{padding:28px;text-align:center;margin-top:14px}
+.empty h2{margin:0 0 6px}
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.case{padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.case h3{margin:0;font-size:17px}
+.case .row{display:flex;gap:6px;flex-wrap:wrap}
+.case small{color:var(--ink2)}
+.mail{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.mail:last-child{border-bottom:0}
+.mail .ic{width:38px;height:38px;border-radius:10px;background:#e0ebff;display:grid;place-items:center;color:#0a64c2;font-weight:800;font-size:13px}
+.mail b{display:block;font-size:14.5px}
+.mail small{color:var(--ink2);font-size:13px}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 14px;padding:16px 18px}
+.form label{font-size:13px;font-weight:600;color:#334155;display:flex;flex-direction:column;gap:4px}
+.form input,.form select,.op select,.op input,.op textarea{border:1px solid #cbd5e1;border-radius:9px;padding:8px 10px;background:#fff;font-size:15px}
+.op td{vertical-align:top}
+.op textarea{width:100%;min-height:58px;resize:vertical}
+.mats{display:flex;flex-wrap:wrap;gap:6px}
+.mats label{display:inline-flex;gap:5px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:3px 8px;font-size:13px;background:#fff;cursor:pointer}
+.mats label.on{background:var(--bluebg);border-color:#9db8f0;color:#1e3a8a}
+.mats input{margin:0}
+.flow{padding:14px}
+.flow svg{display:block;width:100%;min-width:900px;height:auto}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:14px}
+.step{padding:14px 16px}
+.step b{display:flex;gap:10px;align-items:center;font-size:15.5px}
+.step b i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:13px;flex:none}
+.step p{margin:6px 0 0;font-size:14px;color:#334155}
+.set{padding:16px 18px;margin-bottom:14px}
+.set h2{margin:0 0 8px;font-size:18px}
+.set label{display:flex;gap:10px;align-items:flex-start;padding:6px 0}
+.muted{color:var(--ink2);font-size:14px}
+[hidden]{display:none!important}
+.hidden{display:none!important}
+.user{position:relative}
+.ubtn{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;font-size:14.5px}
+.umenu{position:absolute;right:0;top:44px;z-index:8;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:220px;box-shadow:0 10px 30px rgba(15,26,46,.15)}
+.stepper{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0 2px}
+.st{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#64748b;background:#f1f4f9;border-radius:999px;padding:3px 10px 3px 3px}
+.st i{font-style:normal;width:20px;height:20px;border-radius:50%;background:#cbd5e1;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+.st.done{color:#166534;background:var(--greenbg)}.st.done i{background:var(--green)}
+.st.now{color:#fff;background:var(--blue);font-weight:600}.st.now i{background:#fff;color:var(--blue)}
+.dossier{padding:14px 18px;margin-bottom:12px}
+.dossier.mine{border-color:#9db8f0;box-shadow:0 0 0 3px #e3ecfd}
+.dhead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.dhead b{display:block;font-size:16.5px}.dhead small{color:var(--ink2)}
+.dnote{margin:8px 0 0;font-size:14px;background:#f8fafc;border-left:3px solid var(--blue);padding:6px 10px;border-radius:4px}
+details summary{cursor:pointer;color:var(--ink2);font-size:13.5px;margin-top:8px}
+.log{margin:6px 0 0;padding-left:18px;font-size:13.5px}.log li span{color:var(--ink2)}
+.dpanel{border-color:#9db8f0}
+.deskNote{width:100%;min-height:70px;border:1px solid #cbd5e1;border-radius:10px;padding:10px;font-size:15px}
+.login{position:fixed;inset:0;z-index:20;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);background:#fff}
+.lg-l{background:var(--navy);color:#fff;padding:48px max(5vw,24px);display:flex;flex-direction:column;justify-content:center;gap:10px}
+.lg-l h2{font-size:clamp(26px,3vw,38px);line-height:1.1;margin:30px 0 0;letter-spacing:-.02em}
+.lg-l p{color:#c9d3e6;font-size:17px;margin:0}
+.lg-r{padding:48px max(5vw,24px);display:flex;flex-direction:column;justify-content:center;gap:12px;max-width:520px;width:100%;justify-self:center}
+.lg-r h1{margin:0 0 6px;font-size:34px;letter-spacing:-.02em}
+.lg-r label{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:14px}
+.lg-r input{border:1px solid #cbd5e1;border-radius:10px;padding:12px 14px;font-size:16px}
+.lg-r .btn.pri{justify-content:center;padding:12px;font-size:16px}
+.lg-err{color:var(--red);margin:0;min-height:1em;font-size:14px}
+.lg-demo{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;margin-top:6px}
+.lg-demo b{width:100%}.lg-demo .chip{text-align:left;border-radius:10px}
+@media(max-width:760px){.login{grid-template-columns:minmax(0,1fr);overflow:auto}.lg-l{padding:24px 16px}.lg-l h2{margin-top:10px;font-size:24px}.lg-r{padding:24px 16px}}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;z-index:9;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+@media(max-width:1100px){.cols3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.cols3 .box:last-child{grid-column:1/-1}.advies,.plan{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:860px){
+.app{grid-template-columns:minmax(0,1fr)}
+.side{position:sticky;top:0;z-index:5;height:auto;flex-direction:row;align-items:center;padding:10px 12px;gap:8px}
+.logo{padding:0}
+.logo svg{width:40px;height:40px}
+.logo b{font-size:20px}.logo span{font-size:13px}
+.nav{flex-direction:row;overflow-x:auto;gap:2px;margin-left:auto}
+.nav button{padding:8px 10px;font-size:13px;gap:6px;white-space:nowrap}
+.nav button svg{width:18px;height:18px}
+.safe{display:none}
+.user span.mail-t{display:none}
+.uploads{grid-template-columns:minmax(0,1fr)}
+.vs{justify-self:center;width:40px;height:40px;font-size:16px}
+.cols3,.duo{grid-template-columns:minmax(0,1fr)}
+.cols3 .box:last-child{grid-column:auto}
+}
+@media(max-width:600px){
+.nav button span{display:none}
+.logo div{display:none}
+table{font-size:13px}th,td{padding:7px 6px}
+.stack thead{display:none}.stack tr{display:grid;padding:8px 0;border-bottom:1px solid var(--line)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0!important;padding:3px 6px;text-align:right}.stack td::before{content:attr(data-l);font-weight:600;color:#334155;text-align:left;flex:none;max-width:40%}
+.stack td>div{text-align:right}
+.bot{width:40px;height:40px}.bot svg{width:24px}
+.msg-a{gap:10px}
+.send{padding:0 14px}.send span{display:none}
+.attach{width:46px}
+.top p{font-size:15px}
+}
+</style>
+<div class="app">
+  <aside class="side">
+    <div class="logo">
+      <svg width="72" height="64" viewBox="0 0 72 64" aria-hidden="true"><path d="M8 30 L34 8 L60 30" fill="none" stroke="#2f6bf2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M46 12 v-5 h8 v13" fill="none" stroke="#2f6bf2" stroke-width="5" stroke-linejoin="round"/><path d="M14 27 v28 h22" fill="none" stroke="#2f6bf2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 34 l10 8 M32 34 l-6 5" stroke="#2f6bf2" stroke-width="4" stroke-linecap="round"/><path d="M38 44 l9 9 l19 -21" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><b>KBK</b><span>AsbestCheck <i>AI</i></span></div>
+    </div>
+    <nav class="nav" id="nav">
+      <button data-view="analyse" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6M9 15h6"/></svg><span>Nieuwe analyse</span></button>
+      <button data-view="dossiers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M8 13l2.5 2.5L16 11"/></svg><span>Dossiers</span></button>
+      <button data-view="opname"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg><span>Opname (werkbon)</span></button>
+      <button data-view="rapporten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg><span>Inbox rapporten</span></button>
+      <button data-view="proces"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="5" rx="1"/><rect x="14" y="10" width="7" height="5" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/><path d="M6.5 8v8M10 5.5h4a3 3 0 0 1 3 3V10M17.5 15v3.5H10"/></svg><span>Werkproces</span></button>
+      <button data-view="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Account</span></button>
+      <button data-view="instellingen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Instellingen</span></button>
+    </nav>
+    <div class="safe">
+      <svg width="30" height="34" viewBox="0 0 24 28"><path d="M12 1 L22 5 v8 c0 7-4.5 11.5-10 14 C6.5 24.5 2 20 2 13 V5z" fill="#22c55e"/><path d="M7.5 13.5 l3 3 l6-6.5" fill="none" stroke="#0f1a2e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><b>Uw gegevens zijn veilig</b><small>PDF wordt niet opgeslagen</small></div>
+    </div>
+  </aside>
+
+  <main>
+    <header class="top">
+      <div><h1 id="title">Vergelijking &amp; Advies</h1><p id="sub">Asbestinventarisatierapport vergelijken met de KBK-opname (werkbon)</p></div>
+      <div class="user"><button class="ubtn" id="userBtn" type="button"><span class="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4.5"/><path d="M3 22a9 9 0 0 1 18 0z"/></svg></span><span class="mail-t">raphael@example.com</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg></button><div class="umenu card" id="userMenu" hidden><b id="roleT">Projectbegeleider</b><button class="btn sm" id="logoutBtn" type="button">Uitloggen / andere rol</button></div></div>
+    </header>
+
+    <!-- NIEUWE ANALYSE -->
+    <section class="view on" id="view-analyse">
+      <div class="uploads">
+        <div id="slot-rapport"></div>
+        <div class="vs">VS</div>
+        <div id="slot-werkbon"></div>
+      </div>
+      <div class="koppel hidden" id="koppel"></div>
+      <div id="result"></div>
+      <div class="chat" id="chat"></div>
+      <div class="composer">
+        <div class="chips" id="chips"></div>
+        <form class="comp" id="ask">
+          <label class="attach" title="PDF toevoegen (rapport of werkbon)"><input type="file" id="attachFile" accept="application/pdf" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.1l-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg></label>
+          <input type="text" id="q" placeholder="Stel een nieuwe vraag..." autocomplete="off">
+          <button class="send" id="sendBtn" type="submit"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg><span>Verstuur</span></button>
+        </form>
+      </div>
+    </section>
+
+    <!-- DOSSIERS -->
+    <section class="view" id="view-dossiers"></section>
+    <!-- OPNAME -->
+    <section class="view" id="view-opname"></section>
+    <!-- RAPPORTEN -->
+    <section class="view" id="view-rapporten"></section>
+    <!-- WERKPROCES -->
+    <section class="view" id="view-proces"></section>
+    <!-- ACCOUNT -->
+    <section class="view" id="view-account"></section>
+    <!-- INSTELLINGEN -->
+    <section class="view" id="view-instellingen"></section>
+  </main>
+</div>
+<div id="login" class="login" hidden></div>
+<input type="file" id="fileR" accept="application/pdf" hidden>
+<input type="file" id="fileW" accept="application/pdf" hidden>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script>
+/* KBK AsbestCheck AI – demodata
+   RAPPORTEN: gestructureerde extractie van de 5 meegeleverde rapporten
+   WERKBONNEN: voorbeeld-opnames (fictief) van KBK Bouwgroep, Volendam */
+var KBK_DATA = (function () {
+  var RAPPORTEN = [
+    {
+      key: 'meidoorn',
+      fingerprint: ['AI-2026-1048', 'Meidoornstraat 24'],
+      bestand: 'fictief_asbestinventarisatierapport_geplande_werkzaamheden.pdf',
+      paginas: 3, mb: '0,1',
+      fictief: true,
+      titel: 'Renovatie woongebouw De Meidoorn',
+      adres: 'Meidoornstraat 24, 1441 AB Purmerend',
+      postcode: '1441AB',
+      rapportnr: 'AI-2026-1048',
+      bureau: 'Noord-Holland Inspecties BV (fictief)',
+      opdrachtgever: 'Woningbeheer Noord BV',
+      onderzoeksdatum: '14-10-2026',
+      rapportdatum: '20-10-2026',
+      geldigTot: null,
+      bouwjaar: 1978,
+      type: 'Inventarisatie voorafgaand aan renovatie',
+      reikwijdte: 'Alleen de in het rapport beschreven bronnen en monsters (geen volledige ruimtebeschrijving).',
+      geschiktheid: 'Niet expliciet vermeld.',
+      items: [
+        { id: 'A-01', materiaal: 'Leidingisolatie', canon: 'leidingisolatie', locatie: 'Kelder, leidinggang noordzijde', ruimtes: ['kelder'], pos: null, status: 'asbest', soort: 'Chrysotiel + amosiet', hoeveelheid: 'ca. 32 m', rk: 'Niet vermeld', methode: 'Monster M-1048-01', detail: 'Plaatselijk beschadigd.' },
+        { id: 'A-02', materiaal: 'Plaat achter installatie', canon: 'plaat', locatie: 'Begane grond, meterkast', ruimtes: ['meterkast'], pos: 'wand', status: 'asbest', soort: 'Chrysotiel', hoeveelheid: '1 plaat', rk: 'Niet vermeld', methode: 'Monster M-1048-02', detail: 'Visueel intact.' },
+        { id: 'A-03', materiaal: 'Vinylvloer met backing', canon: 'vloerzeil', locatie: 'Appartement 2B, badkamer (2e verdieping)', ruimtes: ['badkamer'], pos: 'vloer', status: 'asbest', soort: 'Chrysotiel (in de backing)', hoeveelheid: 'ca. 8 m²', rk: 'Niet vermeld', methode: 'Monster M-1048-03', detail: 'Asbest zit in de achterliggende laag (backing). Plaatselijk slijtage.', laag: 'backing / onderlaag' },
+        { id: 'A-04', materiaal: 'Asbestcement golfplaten', canon: 'dakplaten', locatie: 'Dak berging achter gebouw', ruimtes: ['berging', 'dak'], pos: 'dak', status: 'asbest', soort: 'Chrysotiel', hoeveelheid: 'ca. 46 m²', rk: 'Niet vermeld', methode: 'Monster M-1048-04', detail: 'Verweerd, enkele beschadigingen zichtbaar.' },
+        { id: 'A-05', materiaal: 'Kozijnkit', canon: 'kit', locatie: 'Trappenhuis, verdieping 1', ruimtes: ['trappenhuis'], pos: 'kozijn', status: 'geen', soort: 'Niet aangetoond', hoeveelheid: 'ca. 12 m', rk: '-', methode: 'Monster M-1048-05', detail: 'Geen asbest aangetoond in het onderzochte monster. Volgens het rapport geen garantie voor andere, niet onderzochte materialen.' }
+      ],
+      gaps: [
+        'Er staat geen risicoklasse (SMA-rt) bij de asbesthoudende bronnen.',
+        'Er zijn geen laboratoriumcertificaten of analysepercentages opgenomen.',
+        'Er is geen tabel met uitgesloten of niet-onderzochte ruimtes; het rapport zegt alleen dat niet-genoemde onderdelen niet als asbestvrij mogen worden beschouwd.'
+      ],
+      geplandRapport: [
+        { id: 'W-01', werk: 'Renovatie technische installaties en vervanging delen leidingwerk', locatie: 'Kelder, leidinggang', planning: 'December 2026', bronnen: ['A-01'], ruimtes: ['kelder'] },
+        { id: 'W-02', werk: 'Aanpassen en vernieuwen elektrische meterkast', locatie: 'Begane grond', planning: 'Januari 2027', bronnen: ['A-02'], ruimtes: ['meterkast'] },
+        { id: 'W-03', werk: 'Badkamerrenovatie inclusief vervangen vloerafwerking', locatie: 'Appartement 2B', planning: 'Februari 2027', bronnen: ['A-03'], ruimtes: ['badkamer'] },
+        { id: 'W-04', werk: 'Vervangen dakbedekking van de berging', locatie: 'Berging achter gebouw', planning: 'Maart 2027', bronnen: ['A-04'], ruimtes: ['berging', 'dak'] },
+        { id: 'W-05', werk: 'Schilder- en herstelwerk trappenhuis en kozijnen', locatie: 'Trappenhuis, verdieping 1', planning: 'April 2027', bronnen: ['A-05'], ruimtes: ['trappenhuis'] }
+      ]
+    },
+    {
+      key: 'teststraat',
+      fingerprint: ['KBK-TEST-2026-014', 'Teststraat 12'],
+      bestand: 'FICTIEF_KBK_Asbestinventarisatierapport_Test.pdf',
+      paginas: 2, mb: '0,1',
+      fictief: true,
+      titel: 'Renovatie oefengebouw De Voorbeeldschool',
+      adres: 'Teststraat 12, 1234 AB Voorbeeldstad',
+      postcode: '1234AB',
+      rapportnr: 'KBK-TEST-2026-014',
+      bureau: 'Onderzoeker J. Voorbeeld (fictief, certificering niet gecontroleerd)',
+      opdrachtgever: 'Stichting Fictief Vastgoed',
+      onderzoeksdatum: '14-10-2026',
+      rapportdatum: '14-10-2026',
+      geldigTot: null,
+      bouwjaar: null,
+      type: 'Fictieve visuele inventarisatie',
+      reikwijdte: 'Geen volledige beschrijving van de onderzochte ruimtes.',
+      geschiktheid: 'Niet vermeld.',
+      items: [
+        { id: 'Locatie A', materiaal: 'Vlakke plaat', canon: 'plaat', locatie: 'Technische ruimte', ruimtes: ['technische ruimte'], pos: 'wand', status: 'asbest', soort: 'Chrysotiel aangetoond (percentage en methode ontbreken)', hoeveelheid: 'ca. 12 m²', rk: 'Niet vermeld', methode: 'Monster M-001', detail: 'Geschroefd. Beschadigd volgens notitie. Geen laboratoriumrapport als bijlage.' },
+        { id: 'Locatie B', materiaal: 'Vloerbedekking', canon: 'vloerzeil', locatie: 'Lokaal 1.04', ruimtes: ['lokaal'], pos: 'vloer', status: 'onvolledig', soort: 'Niet beschikbaar (geen monster)', hoeveelheid: 'Niet vastgesteld', rk: 'Niet vermeld', methode: 'Geen monster genomen', detail: 'Hechtingswijze onbekend, conditie niet beschreven.' }
+      ],
+      gaps: [
+        'Tegenstrijdig advies: "Materiaal op Locatie A hoeft niet te worden verwijderd" (zonder onderbouwing), terwijl ook staat dat bij beschadiging eerst een deskundige moet beoordelen. Locatie A is volgens de notitie beschadigd.',
+        'Voor Locatie B ontbreken monstername en laboratoriumuitslag.',
+        'Voor beide locaties ontbreekt een onderbouwde risicoklasse.',
+        'De omvang van Locatie B is niet vastgesteld.',
+        'Geen plattegrond of foto\'s toegevoegd.',
+        'Geen volledige beschrijving van de onderzochte ruimtes.',
+        'Bevoegdheid en certificering van de onderzoeker zijn niet gecontroleerd.',
+        'Percentage en analysemethode van monster M-001 ontbreken; geen laboratoriumrapport als bijlage.'
+      ],
+      geplandRapport: []
+    },
+    {
+      key: 'valerius',
+      fingerprint: ['262.7014', 'Valeriusrondeel 242'],
+      bestand: 'Asbestin_Valeriusrondeel_242_Capelle_aan_den_IJssel.pdf',
+      paginas: 46, mb: '5,8',
+      fictief: false,
+      titel: 'Woning en berging',
+      adres: 'Valeriusrondeel 242, 2902 CG Capelle aan den IJssel',
+      postcode: '2902CG',
+      rapportnr: 'Project 262.7014 (versie 1.0, definitief)',
+      bureau: 'Van Santen Advies B.V.',
+      opdrachtgever: 'Steenbruggen Milieutechniek bv',
+      onderzoeksdatum: '01-09-2026 en 02-09-2026',
+      rapportdatum: '03-09-2026',
+      geldigTot: '2029-09-03',
+      bouwjaar: null,
+      type: 'Asbestinventarisatie t.b.v. mutatie en renovatie',
+      reikwijdte: 'Woning en berging.',
+      geschiktheid: 'Verwijderen van het genoemde asbest; mutatieonderhoud; renovatie badkamer, keuken en toilet zonder de bouwkundige integriteit aan te tasten (m.u.v. beperkingen).',
+      scopeRenovatie: ['badkamer', 'keuken', 'toilet'],
+      items: [
+        { id: 'Bron 1', materiaal: 'Onderlaag vloerzeil', canon: 'vloerzeil', locatie: 'Woonkamer, hallen, slaapkamer naast keuken, meterkast, kasten', ruimtes: ['woonkamer', 'hal', 'slaapkamer', 'meterkast'], pos: 'vloer', status: 'asbest', soort: '30-60% chrysotiel', hoeveelheid: '62 m²', rk: '2', methode: 'Monster M1', detail: 'Niet-hechtgebonden, ernstig beschadigd. Saneren op korte termijn (containment). Ruimtes gesloten houden en alleen betreden met asbest-PBM tot sanering.', laag: 'onderlaag', urgent: true },
+        { id: 'Bron 2', materiaal: 'Stof (kleefmonsters K1-K19)', canon: 'stof', locatie: 'Diverse ruimtes', ruimtes: ['*'], pos: null, status: 'geen', soort: '0 vs/cm²', hoeveelheid: '-', rk: '-', methode: '18 kleefmonsters', detail: 'Genomen rond bron 1; geen asbestvezels aangetoond.' },
+        { id: 'Bron 3', materiaal: 'Tegellijm', canon: 'tegellijm', locatie: 'Achter wandtegels keuken; onder en achter tegelwerk badkamer en toilet', ruimtes: ['keuken', 'badkamer', 'toilet'], pos: null, status: 'geen', soort: '<0,1% (niet aantoonbaar)', hoeveelheid: '-', rk: '-', methode: 'Monsters M2 t/m M11', detail: 'Destructief onderzocht.' },
+        { id: 'Bron 4', materiaal: 'Stof balkon', canon: 'stof', locatie: 'Balkon', ruimtes: ['balkon'], pos: null, status: 'geen', soort: '<0,1%', hoeveelheid: '-', rk: '-', methode: 'Kleefmonster K5', detail: '' },
+        { id: 'Visueel', materiaal: 'Keukenblok (onderzijde)', canon: 'keukenblok', locatie: 'Keuken', ruimtes: ['keuken'], pos: null, status: 'geen', soort: 'Geen verdacht materiaal waargenomen', hoeveelheid: '-', rk: '-', methode: 'Visuele inspectie', detail: 'Onder het keukenblok geen asbestverdacht materiaal.' },
+        { id: 'Visueel', materiaal: 'Vloeren overige ruimtes', canon: 'vloerzeil', locatie: 'Overige slaapkamers, inpandige berging', ruimtes: ['berging'], pos: 'vloer', status: 'geen', soort: 'Geen verdacht materiaal waargenomen', hoeveelheid: '-', rk: '-', methode: 'Visuele inspectie', detail: 'Op de vloer geen asbestverdachte materialen aangetroffen.' },
+        { id: 'Visueel', materiaal: 'Ventilatiekanalen', canon: 'ventilatie', locatie: 'Keuken, toilet, badkamer', ruimtes: ['keuken', 'toilet', 'badkamer'], pos: null, status: 'geen', soort: 'Metaal (niet verdacht)', hoeveelheid: '-', rk: '-', methode: 'Visuele inspectie', detail: '' },
+        { id: 'Uitsluiting', materiaal: 'Spouwbladen', canon: 'spouw', locatie: 'In de spouw', ruimtes: ['*'], pos: 'wand', status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Niet geïnspecteerd', detail: 'Destructief onderzoek hoorde niet bij de opdracht.' },
+        { id: 'Uitsluiting', materiaal: 'Diverse toepassingen boven vaste plafonds', canon: 'plafond', locatie: 'Boven de vaste plafonds', ruimtes: ['*'], pos: 'plafond', status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Niet geïnspecteerd', detail: 'Destructief onderzoek hoorde niet bij de opdracht.' },
+        { id: 'Uitsluiting', materiaal: 'Buismateriaal in koven/schachten', canon: 'koof', locatie: 'In koven en schachten', ruimtes: ['*'], pos: null, status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Niet geïnspecteerd', detail: 'Destructief onderzoek hoorde niet bij de opdracht.' },
+        { id: 'Uitsluiting', materiaal: 'Beglazingskit', canon: 'beglazingskit', locatie: 'Enkel- en dubbelglas', ruimtes: ['*'], pos: 'kozijn', status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Niet geïnspecteerd', detail: 'Niet onderzocht vanwege kans op glasbreuk.' }
+      ],
+      gaps: [
+        'Het onderzoek is op 1-9-2026 gestaakt en op 2-9-2026 aanvullend uitgevoerd: controleer of de rapportage beide delen volledig dekt.',
+        'Bron 1 is ernstig beschadigd en niet-hechtgebonden: de betrokken ruimtes moeten volgens het rapport gesloten blijven tot de sanering.',
+        'Uitgesloten (spouw, boven plafonds, koven/schachten, beglazingskit): aanvullend onderzoek nodig zodra werkzaamheden deze onderdelen raken.'
+      ],
+      geplandRapport: [
+        { id: 'Aanleiding', werk: 'Mutatie woning en berging + renovatie badkamer, keuken en toilet', locatie: 'Gehele woning', planning: 'Niet vermeld', bronnen: ['Bron 1', 'Bron 3'], ruimtes: ['badkamer', 'keuken', 'toilet'] }
+      ]
+    },
+    {
+      key: 'struisgras',
+      fingerprint: ['250139', 'Struisgras 8'],
+      bestand: 'Asbestin_Struisgras_8_Rotterdam.pdf',
+      paginas: 32, mb: '3,2',
+      fictief: false,
+      titel: 'Woonhuis (eengezinswoning) en berging',
+      adres: 'Struisgras 8, 3068 CW Rotterdam',
+      postcode: '3068CW',
+      rapportnr: 'Project 250139 (versie 1.0)',
+      bureau: 'SSBA B.V.',
+      opdrachtgever: 'Steenbruggen Milieutechniek',
+      onderzoeksdatum: '10-02-2025',
+      rapportdatum: '11-02-2025',
+      geldigTot: '2028-02-11',
+      bouwjaar: 1969,
+      type: 'Asbestinventarisatie gehele woning',
+      reikwijdte: 'Het gehele bouwwerk: woning en berging.',
+      geschiktheid: 'Verwijderen van het genoemde asbest; renovatie zonder de bouwkundige integriteit aan te tasten.',
+      items: [
+        { id: '250139.4', materiaal: 'Onderlaag vloerzeil (onder de plavuizen)', canon: 'vloerzeil', locatie: 'Keuken', ruimtes: ['keuken'], pos: 'vloer', status: 'asbest', soort: '30-60% chrysotiel', hoeveelheid: '10 m²', rk: '2', methode: 'Monster B3528', detail: 'Niet-hechtgebonden, licht beschadigd. Achterliggende laag onder de vloertegels.', laag: 'onder de vloertegels' },
+        { id: '250139.1', materiaal: 'Ontluchtingsbuis / ventilatiekanaal', canon: 'ventilatie', locatie: 'Keuken, toilet', ruimtes: ['keuken', 'toilet'], pos: 'wand', status: 'asbest', soort: '10-15% chrysotiel', hoeveelheid: '2 st', rk: '2', methode: 'Monster A1473 (verwijst naar Blauwgras 54)', detail: 'Ingemetseld, hechtgebonden, slecht bereikbaar.' },
+        { id: '250139.2', materiaal: 'Tegellijm grijs', canon: 'tegellijm', locatie: 'Onder de vloertegels keuken', ruimtes: ['keuken'], pos: 'vloer', status: 'geen', soort: '<0,1%, geen asbest', hoeveelheid: '-', rk: '-', methode: 'Monsters B3528, B4554', detail: '' },
+        { id: '250139.3', materiaal: 'Tegellijm wit', canon: 'tegellijm', locatie: 'Onder de vloertegels keuken', ruimtes: ['keuken'], pos: 'vloer', status: 'geen', soort: '<0,1%, geen asbest', hoeveelheid: '-', rk: '-', methode: 'Monsters B7271, B7324', detail: '' },
+        { id: 'Visueel', materiaal: 'Golfplaten dak berging', canon: 'dakplaten', locatie: 'Berging', ruimtes: ['berging', 'dak'], pos: 'dak', status: 'geen', soort: 'Niet asbestverdacht (visueel, NT)', hoeveelheid: '-', rk: '-', methode: 'Visuele inspectie', detail: 'Niet bemonsterd; visueel als niet-asbestverdacht beoordeeld.' },
+        { id: 'Visueel', materiaal: 'Ventilatiekanaal badkamer', canon: 'ventilatie', locatie: 'Badkamer', ruimtes: ['badkamer'], pos: 'wand', status: 'geen', soort: 'Metaal', hoeveelheid: '-', rk: '-', methode: 'Visuele inspectie', detail: '' },
+        { id: 'Visueel', materiaal: 'Cv-ketel', canon: 'cv', locatie: 'Woning', ruimtes: ['*'], pos: null, status: 'geen', soort: 'Niet asbestverdacht', hoeveelheid: '-', rk: '-', methode: 'Visuele inspectie', detail: '' },
+        { id: 'Verdacht', materiaal: 'Beplating onder voor- en tuindeur', canon: 'beplating', locatie: 'Voordeur en tuindeur', ruimtes: ['hal', 'gevel', 'woonkamer'], pos: 'kozijn', status: 'onvolledig', soort: 'Asbestverdacht, niet bemonsterd', hoeveelheid: '-', rk: '-', methode: 'Visueel verdacht', detail: 'Met de eigenaar is afgesproken hier geen handelingen te verrichten; niet onderzocht.' },
+        { id: 'Uitsluiting', materiaal: 'Koven, schachten en spouwen', canon: 'koof', locatie: 'Gehele woning', ruimtes: ['*'], pos: null, status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Valt buiten scope', detail: 'Bij werkzaamheden aan dit onderdeel adviseert het rapport aanvullende inventarisatie.' },
+        { id: 'Uitsluiting', materiaal: 'Spouwen', canon: 'spouw', locatie: 'Gehele woning', ruimtes: ['*'], pos: 'wand', status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Valt buiten scope', detail: '' },
+        { id: 'Uitsluiting', materiaal: 'Kozijnaansluitingen met muren/vloeren/kolommen', canon: 'kozijn', locatie: 'Gehele woning', ruimtes: ['*'], pos: 'kozijn', status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Valt buiten scope', detail: '' },
+        { id: 'Uitsluiting', materiaal: 'Onder/achter tegelwerk badkamer en toilet', canon: 'tegellijm', locatie: 'Badkamer, toilet', ruimtes: ['badkamer', 'toilet'], pos: null, status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Valt buiten scope', detail: 'Achter de wandtegels en onder de vloertegels heeft geen inspectie plaatsgevonden.' },
+        { id: 'Uitsluiting', materiaal: 'Achter de wandtegels keuken', canon: 'tegellijm', locatie: 'Keuken', ruimtes: ['keuken'], pos: 'wand', status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Valt buiten scope', detail: '' },
+        { id: 'Uitsluiting', materiaal: 'Onder de vloertegels meterkast en trapkast', canon: 'tegellijm', locatie: 'Meterkast, trapkast', ruimtes: ['meterkast', 'trapkast'], pos: 'vloer', status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Valt buiten scope', detail: '' },
+        { id: 'Uitsluiting', materiaal: 'Achter rabatdelen buitengevel', canon: 'gevel', locatie: 'Buitengevel', ruimtes: ['gevel'], pos: 'wand', status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Valt buiten scope', detail: '' },
+        { id: 'Uitsluiting', materiaal: 'Kruipruimte onder isolatiekorrels', canon: 'kruipruimte', locatie: 'Kruipruimte', ruimtes: ['kruipruimte'], pos: 'vloer', status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Alleen vanaf het luik bekeken', detail: '' },
+        { id: 'Uitsluiting', materiaal: 'Boven de gipsplafonds', canon: 'plafond', locatie: 'Gehele woning', ruimtes: ['*'], pos: 'plafond', status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Geen inspectie', detail: '' }
+      ],
+      gaps: [
+        'Monsternummer B3528 staat zowel bij de asbesthoudende onderlaag vloerzeil (30-60% chrysotiel) als bij de grijze tegellijm (geen asbest). Laat de deskundige nagaan welke uitslag bij welk materiaal hoort.',
+        'De beplating onder voor- en tuindeur is asbestverdacht maar niet onderzocht.',
+        'Bron 250139.1 verwijst naar een monster van een ander adres (Blauwgras 54).'
+      ],
+      geplandRapport: []
+    },
+    {
+      key: 'smalthof',
+      fingerprint: ['103472-005', 'Willem Smalthof 13', 'R-2557025711'],
+      bestand: 'Asbestin_Willem_Smalthof_13_Rotterdam.pdf',
+      paginas: 28, mb: '4,1',
+      fictief: false,
+      titel: 'MO (mutatie-object), 3e verdieping',
+      adres: 'Willem Smalthof 13, 3031 NL Rotterdam',
+      postcode: '3031NL',
+      rapportnr: 'R-2557025711 (project 103472-005)',
+      bureau: 'SGI Compliance Consultancy',
+      opdrachtgever: 'Stichting Havensteder',
+      onderzoeksdatum: '21-01-2026',
+      rapportdatum: '26-01-2026',
+      geldigTot: '2029-01-26',
+      bouwjaar: 1978,
+      type: 'Asbestinventarisatie gedeelte bouwwerk',
+      reikwijdte: 'Een gedeelte van het bouwwerk (woning, 3e verdieping).',
+      geschiktheid: 'Badkamer, keuken en toilet: renovatie zonder bouwkundige integriteit aan te tasten. Overige ruimtes: uitsluitend verwijdering van het genoemde asbest.',
+      scopeRenovatie: ['badkamer', 'keuken', 'toilet'],
+      items: [
+        { id: 'Toepassing 1', materiaal: 'Lijmlaag achter de tegels', canon: 'tegellijm', locatie: 'Keuken', ruimtes: ['keuken'], pos: 'wand', status: 'asbest', soort: 'Chrysotiel 0,1-2%', hoeveelheid: '6 m²', rk: '2 (containment)', methode: 'Monsters MM01, MM02', detail: 'Achterliggende laag achter de wandtegels. Hechtgebonden, niet beschadigd.', laag: 'lijmlaag achter tegels' },
+        { id: 'Toepassing 2', materiaal: 'Lijmlaag achter de tegels', canon: 'tegellijm', locatie: 'Toilet', ruimtes: ['toilet'], pos: 'wand', status: 'asbest', soort: 'Chrysotiel 0,1-2%', hoeveelheid: '3,5 m²', rk: '2 (containment)', methode: 'Monsters MM03, MM04', detail: 'Achterliggende laag achter de wandtegels.', laag: 'lijmlaag achter tegels' },
+        { id: 'Toepassing 4', materiaal: 'Lijmlaag achter de tegels', canon: 'tegellijm', locatie: 'Badkamer', ruimtes: ['badkamer'], pos: 'wand', status: 'asbest', soort: 'Chrysotiel 0,1-2%', hoeveelheid: '12 m²', rk: '2 (containment)', methode: 'Monsters MM07, MM08', detail: 'Achterliggende laag achter de wandtegels.', laag: 'lijmlaag achter tegels' },
+        { id: 'Toepassing 6', materiaal: 'Vensterbank', canon: 'vensterbank', locatie: 'Keuken, woonkamer en slaapkamers', ruimtes: ['keuken', 'woonkamer', 'slaapkamer'], pos: 'kozijn', status: 'asbest', soort: 'Chrysotiel 10-15%', hoeveelheid: '6 stuks', rk: '1 (demonteren)', methode: 'Monster MM11', detail: 'Geschroefd, hechtgebonden. Achter de vensterbanken is niet geïnspecteerd.' },
+        { id: 'Toepassing 3', materiaal: 'Lijmlaag onder de tegels', canon: 'tegellijm', locatie: 'Toilet (vloer)', ruimtes: ['toilet'], pos: 'vloer', status: 'geen', soort: '<0,1% (geen)', hoeveelheid: '-', rk: '-', methode: 'Monsters MM05, MM06', detail: '' },
+        { id: 'Toepassing 5', materiaal: 'Lijmlaag onder de tegels', canon: 'tegellijm', locatie: 'Badkamer (vloer); in tabel vermeld als toilet', ruimtes: ['badkamer'], pos: 'vloer', status: 'geen', soort: '<0,1% (geen)', hoeveelheid: '-', rk: '-', methode: 'Monsters MM09, MM10', detail: 'Locatie in de tabel ("toilet") wijkt af van de omschrijving ("badkamer").' },
+        { id: 'Visueel', materiaal: 'Vloeren (lijm/vloerbedekking)', canon: 'vloerzeil', locatie: 'Gehele woning', ruimtes: ['woonkamer', 'slaapkamer', 'hal', 'keuken', 'badkamer', 'toilet'], pos: 'vloer', status: 'geen', soort: 'Geen verdachte toepassingen waargenomen', hoeveelheid: '-', rk: '-', methode: 'Visuele inspectie', detail: '' },
+        { id: 'Visueel', materiaal: 'Radiatorpakkingen', canon: 'radiator', locatie: 'Gehele woning', ruimtes: ['*'], pos: null, status: 'geen', soort: 'Geen verdachte pakkingen', hoeveelheid: '-', rk: '-', methode: 'Visuele inspectie', detail: '' },
+        { id: 'Visueel', materiaal: 'Keukenblok (onderzijde)', canon: 'keukenblok', locatie: 'Keuken', ruimtes: ['keuken'], pos: null, status: 'geen', soort: 'Geen verdacht materiaal', hoeveelheid: '-', rk: '-', methode: 'Destructief onderzocht', detail: '' },
+        { id: 'Uitsluiting', materiaal: 'Achter asbestverdachte toepassingen (o.a. vensterbanken)', canon: 'kozijn', locatie: 'Keuken, woonkamer, slaapkamers', ruimtes: ['keuken', 'woonkamer', 'slaapkamer'], pos: 'kozijn', status: 'uitgesloten', soort: '-', hoeveelheid: '-', rk: '-', methode: 'Niet geïnspecteerd', detail: 'Kon niet zonder aanvullende maatregelen worden gedemonteerd.' }
+      ],
+      gaps: [
+        'Toepassing 5: de locatie in de tabel ("toilet") wijkt af van de omschrijving ("badkamer").',
+        'Het rapport is buiten badkamer, keuken en toilet alleen geschikt voor het verwijderen van het genoemde asbest, niet voor andere (bouwkundige) werkzaamheden.',
+        'Achter de asbesthoudende vensterbanken is niet geïnspecteerd.'
+      ],
+      geplandRapport: [
+        { id: 'Interview', werk: 'Renovatie badkamer, toilet en keuken (mutatie)', locatie: '3e verdieping', planning: 'Niet vermeld', bronnen: ['Toepassing 1', 'Toepassing 2', 'Toepassing 4'], ruimtes: ['badkamer', 'keuken', 'toilet'] }
+      ]
+    }
+  ];
+
+  var KBK = { naam: 'KBK Bouwgroep', plaats: 'Volendam' };
+
+  var WERKBONNEN = [
+    {
+      key: 'meidoorn',
+      nr: 'KBK-WB-2026-118',
+      soort: 'Mutatie + renovatie',
+      object: 'Appartement 2B (2e verdieping) met bijbehorende meterkast, kelder en trappenhuis',
+      adres: 'Meidoornstraat 24, 1441 AB Purmerend',
+      postcode: '1441AB',
+      opdrachtgever: 'Woningbeheer Noord BV',
+      projectbegeleider: 'R. Veerman',
+      opnamedatum: '06-10-2026',
+      startGepland: '2027-01-11',
+      bouwjaar: 1978,
+      bewoond: 'Leeg (mutatie)',
+      items: [
+        { code: '01', ruimte: 'Badkamer', ruimtes: ['badkamer'], werk: 'Vloerafwerking verwijderen incl. ondervloer, nieuwe tegelvloer leggen', raakt: [{ canon: 'vloerzeil', label: 'Vinylvloer + backing/onderlaag', pos: 'vloer' }], destructief: true, planning: 'Wk 3' },
+        { code: '02', ruimte: 'Badkamer', ruimtes: ['badkamer'], werk: 'Wandtegels verwijderen en opnieuw betegelen', raakt: [{ canon: 'tegellijm', label: 'Tegellijm achter wandtegels', pos: 'wand' }], destructief: true, planning: 'Wk 3' },
+        { code: '03', ruimte: 'Badkamer', ruimtes: ['badkamer'], werk: 'Nieuw plafond en mechanische ventilatie aansluiten', raakt: [{ canon: 'plafond', label: 'Bestaand plafond + ruimte erboven', pos: 'plafond' }, { canon: 'ventilatie', label: 'Ventilatiekanaal', pos: 'wand' }], destructief: true, planning: 'Wk 4' },
+        { code: '04', ruimte: 'Keuken', ruimtes: ['keuken'], werk: 'Keukenblok vervangen, tegelwerk achterwand vernieuwen', raakt: [{ canon: 'keukenblok', label: 'Keukenblok (onderzijde)', pos: null }, { canon: 'tegellijm', label: 'Tegellijm achterwand', pos: 'wand' }], destructief: true, planning: 'Wk 4' },
+        { code: '05', ruimte: 'Toilet', ruimtes: ['toilet'], werk: 'Toiletpot en fontein vervangen, afvoer in leidingschacht aanpassen', raakt: [{ canon: 'koof', label: 'Leidingschacht / koof', pos: null }], destructief: true, planning: 'Wk 4' },
+        { code: '06', ruimte: 'Woonkamer, slaapkamers', ruimtes: ['woonkamer', 'slaapkamer', 'hal'], werk: 'Vloerbedekking verwijderen en lijmresten schuren (mutatie)', raakt: [{ canon: 'vloerzeil', label: 'Vloerbedekking + lijmlaag', pos: 'vloer' }], destructief: true, planning: 'Wk 2' },
+        { code: '07', ruimte: 'Meterkast (begane grond)', ruimtes: ['meterkast'], werk: 'Groepenkast vervangen inclusief achterplaat', raakt: [{ canon: 'plaat', label: 'Achterplaat meterkast', pos: 'wand' }], destructief: true, planning: 'Wk 2' },
+        { code: '08', ruimte: 'Kelder, leidinggang', ruimtes: ['kelder'], werk: 'Cv- en waterleiding naar appartement 2B omleggen', raakt: [{ canon: 'leidingisolatie', label: 'Leidingen + isolatie', pos: null }], destructief: true, planning: 'Wk 2' },
+        { code: '09', ruimte: 'Trappenhuis, verdieping 1', ruimtes: ['trappenhuis'], werk: 'Kit rond kozijnen vervangen en kozijnen schilderen', raakt: [{ canon: 'kit', label: 'Kozijnkit', pos: 'kozijn' }], destructief: true, planning: 'Wk 5' }
+      ],
+      opmerkingen: 'Bewoner vertrokken, sleutel bij beheerder. Dakbedekking berging valt niet onder deze opdracht.'
+    },
+    {
+      key: 'teststraat',
+      nr: 'KBK-WB-2026-099',
+      soort: 'Renovatie',
+      object: 'Oefengebouw De Voorbeeldschool (fictief)',
+      adres: 'Teststraat 12, 1234 AB Voorbeeldstad',
+      postcode: '1234AB',
+      opdrachtgever: 'Stichting Fictief Vastgoed',
+      projectbegeleider: 'R. Veerman',
+      opnamedatum: '07-10-2026',
+      startGepland: '2027-02-01',
+      bouwjaar: null,
+      bewoond: 'In gebruik',
+      items: [
+        { code: '01', ruimte: 'Technische ruimte', ruimtes: ['technische ruimte'], werk: 'Vlakke plaat demonteren voor nieuwe installatie', raakt: [{ canon: 'plaat', label: 'Vlakke plaat (geschroefd)', pos: 'wand' }], destructief: true, planning: 'Wk 6' },
+        { code: '02', ruimte: 'Lokaal 1.04', ruimtes: ['lokaal'], werk: 'Vloerbedekking vervangen', raakt: [{ canon: 'vloerzeil', label: 'Vloerbedekking + onderlaag/lijm', pos: 'vloer' }], destructief: true, planning: 'Wk 6' },
+        { code: '03', ruimte: 'Lokaal 1.04', ruimtes: ['lokaal'], werk: 'Systeemplafond vervangen', raakt: [{ canon: 'plafond', label: 'Plafondplaten + ruimte erboven', pos: 'plafond' }], destructief: true, planning: 'Wk 7' },
+        { code: '04', ruimte: 'Gang', ruimtes: ['gang'], werk: 'Wanden schilderen (niet-destructief)', raakt: [{ canon: 'verf', label: 'Wandafwerking', pos: 'wand' }], destructief: false, planning: 'Wk 7' }
+      ],
+      opmerkingen: 'Fictieve testcasus.'
+    },
+    {
+      key: 'valerius',
+      nr: 'KBK-WB-2026-131',
+      soort: 'Mutatie + renovatie badkamer, keuken, toilet',
+      object: 'Woning met berging',
+      adres: 'Valeriusrondeel 242, 2902 CG Capelle aan den IJssel',
+      postcode: '2902CG',
+      opdrachtgever: 'Woningcorporatie (voorbeeld)',
+      projectbegeleider: 'S. Kwakman',
+      opnamedatum: '25-08-2026',
+      startGepland: '2026-10-05',
+      bouwjaar: null,
+      bewoond: 'Leeg (mutatie)',
+      items: [
+        { code: '01', ruimte: 'Hal, woonkamer, slaapkamer, meterkast', ruimtes: ['hal', 'woonkamer', 'slaapkamer', 'meterkast'], werk: 'Vloerzeil inclusief onderlaag verwijderen (mutatie)', raakt: [{ canon: 'vloerzeil', label: 'Vloerzeil + onderlaag', pos: 'vloer' }], destructief: true, planning: 'Wk 1' },
+        { code: '02', ruimte: 'Keuken', ruimtes: ['keuken'], werk: 'Keukenblok vervangen, wandtegels en tegellijm verwijderen', raakt: [{ canon: 'keukenblok', label: 'Keukenblok', pos: null }, { canon: 'tegellijm', label: 'Tegellijm achter wandtegels', pos: 'wand' }], destructief: true, planning: 'Wk 2' },
+        { code: '03', ruimte: 'Badkamer', ruimtes: ['badkamer'], werk: 'Wand- en vloertegels slopen incl. tegellijm', raakt: [{ canon: 'tegellijm', label: 'Tegellijm wand', pos: 'wand' }, { canon: 'tegellijm', label: 'Tegellijm vloer', pos: 'vloer' }], destructief: true, planning: 'Wk 2' },
+        { code: '04', ruimte: 'Toilet', ruimtes: ['toilet'], werk: 'Tegelwerk en toiletpot vervangen', raakt: [{ canon: 'tegellijm', label: 'Tegellijm wand en vloer', pos: null }], destructief: true, planning: 'Wk 3' },
+        { code: '05', ruimte: 'Badkamer, toilet', ruimtes: ['badkamer', 'toilet'], werk: 'Nieuwe afvoer en leidingen door bestaande leidingkoof', raakt: [{ canon: 'koof', label: 'Leidingkoof / schacht', pos: null }], destructief: true, planning: 'Wk 3' },
+        { code: '06', ruimte: 'Keuken', ruimtes: ['keuken'], werk: 'Nieuw plafond met inbouwspots', raakt: [{ canon: 'plafond', label: 'Ruimte boven vast plafond', pos: 'plafond' }], destructief: true, planning: 'Wk 3' },
+        { code: '07', ruimte: 'Woonkamer', ruimtes: ['woonkamer'], werk: 'Enkel glas vervangen door HR++ glas', raakt: [{ canon: 'beglazingskit', label: 'Beglazingskit / stopverf', pos: 'kozijn' }], destructief: true, planning: 'Wk 4' },
+        { code: '08', ruimte: 'Berging', ruimtes: ['berging'], werk: 'Opruimen en schilderwerk (niet-destructief)', raakt: [{ canon: 'verf', label: 'Wandafwerking', pos: 'wand' }], destructief: false, planning: 'Wk 4' }
+      ],
+      opmerkingen: 'Woning leeg opgeleverd. Vloerzeil in hal is beschadigd, ruimte niet betreden zonder overleg.'
+    },
+    {
+      key: 'struisgras',
+      nr: 'KBK-WB-2025-022',
+      soort: 'Renovatie keuken en badkamer',
+      object: 'Eengezinswoning met berging',
+      adres: 'Struisgras 8, 3068 CW Rotterdam',
+      postcode: '3068CW',
+      opdrachtgever: 'Woningcorporatie (voorbeeld)',
+      projectbegeleider: 'S. Kwakman',
+      opnamedatum: '03-02-2025',
+      startGepland: '2025-04-07',
+      bouwjaar: 1969,
+      bewoond: 'Bewoond',
+      items: [
+        { code: '01', ruimte: 'Keuken', ruimtes: ['keuken'], werk: 'Vloertegels en alle onderliggende lagen verwijderen', raakt: [{ canon: 'vloerzeil', label: 'Onderlaag onder de plavuizen', pos: 'vloer' }, { canon: 'tegellijm', label: 'Tegellijm vloer', pos: 'vloer' }], destructief: true, planning: 'Wk 1' },
+        { code: '02', ruimte: 'Keuken', ruimtes: ['keuken'], werk: 'Wandtegels keuken verwijderen', raakt: [{ canon: 'tegellijm', label: 'Tegellijm achter wandtegels', pos: 'wand' }], destructief: true, planning: 'Wk 1' },
+        { code: '03', ruimte: 'Keuken, toilet', ruimtes: ['keuken', 'toilet'], werk: 'Ventilatiekanalen vervangen door nieuwe MV-kanalen', raakt: [{ canon: 'ventilatie', label: 'Ontluchtingsbuis (ingemetseld)', pos: 'wand' }], destructief: true, planning: 'Wk 2' },
+        { code: '04', ruimte: 'Badkamer', ruimtes: ['badkamer'], werk: 'Wand- en vloertegels slopen', raakt: [{ canon: 'tegellijm', label: 'Tegellijm wand en vloer', pos: null }], destructief: true, planning: 'Wk 2' },
+        { code: '05', ruimte: 'Hal (voordeur), woonkamer (tuindeur)', ruimtes: ['hal', 'woonkamer', 'gevel'], werk: 'Voordeur en tuindeur vervangen incl. beplating onder de deur', raakt: [{ canon: 'beplating', label: 'Beplating onder deur', pos: 'kozijn' }, { canon: 'kozijn', label: 'Kozijnaansluiting', pos: 'kozijn' }], destructief: true, planning: 'Wk 3' },
+        { code: '06', ruimte: 'Kruipruimte', ruimtes: ['kruipruimte'], werk: 'Waterleidingen in kruipruimte vervangen', raakt: [{ canon: 'kruipruimte', label: 'Kruipruimte onder isolatiekorrels', pos: 'vloer' }], destructief: true, planning: 'Wk 3' },
+        { code: '07', ruimte: 'Berging', ruimtes: ['berging', 'dak'], werk: 'Golfplaten dak berging vervangen', raakt: [{ canon: 'dakplaten', label: 'Golfplaten', pos: 'dak' }], destructief: true, planning: 'Wk 4' }
+      ],
+      opmerkingen: 'Bewoner blijft in de woning; afspraken over bereikbaarheid keuken.'
+    },
+    {
+      key: 'smalthof',
+      nr: 'KBK-WB-2026-007',
+      soort: 'Mutatie + renovatie badkamer, keuken, toilet',
+      object: 'Woning 3e verdieping (mutatie-object)',
+      adres: 'Willem Smalthof 13, 3031 NL Rotterdam',
+      postcode: '3031NL',
+      opdrachtgever: 'Woningcorporatie (voorbeeld)',
+      projectbegeleider: 'R. Veerman',
+      opnamedatum: '14-01-2026',
+      startGepland: '2026-03-02',
+      bouwjaar: 1978,
+      bewoond: 'Leeg (mutatie)',
+      items: [
+        { code: '01', ruimte: 'Keuken', ruimtes: ['keuken'], werk: 'Wandtegels verwijderen, nieuwe keuken plaatsen', raakt: [{ canon: 'tegellijm', label: 'Lijmlaag achter wandtegels', pos: 'wand' }, { canon: 'keukenblok', label: 'Keukenblok', pos: null }], destructief: true, planning: 'Wk 10' },
+        { code: '02', ruimte: 'Toilet', ruimtes: ['toilet'], werk: 'Wand- en vloertegels vervangen', raakt: [{ canon: 'tegellijm', label: 'Lijmlaag achter wandtegels', pos: 'wand' }, { canon: 'tegellijm', label: 'Lijmlaag onder vloertegels', pos: 'vloer' }], destructief: true, planning: 'Wk 10' },
+        { code: '03', ruimte: 'Badkamer', ruimtes: ['badkamer'], werk: 'Badkamer volledig strippen (wand en vloer)', raakt: [{ canon: 'tegellijm', label: 'Lijmlaag achter wandtegels', pos: 'wand' }, { canon: 'tegellijm', label: 'Lijmlaag onder vloertegels', pos: 'vloer' }], destructief: true, planning: 'Wk 11' },
+        { code: '04', ruimte: 'Keuken, woonkamer, slaapkamers', ruimtes: ['keuken', 'woonkamer', 'slaapkamer'], werk: 'Vensterbanken vervangen', raakt: [{ canon: 'vensterbank', label: 'Vensterbank', pos: 'kozijn' }, { canon: 'kozijn', label: 'Ruimte achter vensterbank', pos: 'kozijn' }], destructief: true, planning: 'Wk 11' },
+        { code: '05', ruimte: 'Woonkamer', ruimtes: ['woonkamer'], werk: 'Wand tussen keuken en woonkamer deels doorbreken', raakt: [{ canon: 'wand', label: 'Binnenwand (bouwkundig)', pos: 'wand' }], destructief: true, bouwkundig: true, planning: 'Wk 12' },
+        { code: '06', ruimte: 'Gehele woning', ruimtes: ['woonkamer', 'slaapkamer', 'hal'], werk: 'Radiatoren vervangen', raakt: [{ canon: 'radiator', label: 'Radiatoren + pakkingen', pos: null }], destructief: true, planning: 'Wk 12' }
+      ],
+      opmerkingen: 'Leeg mutatie-object. Doorbraak keuken-woonkamer op verzoek van de corporatie.'
+    }
+  ];
+
+  return { RAPPORTEN: RAPPORTEN, WERKBONNEN: WERKBONNEN, KBK: KBK };
+})();
+if (typeof module !== 'undefined') module.exports = KBK_DATA;
+
+/* KBK AsbestCheck AI – vergelijkingsmotor (draait volledig in de browser)
+   Kernregel: de motor geeft NOOIT een oordeel 'veilig'. Hij signaleert en verwijst naar een deskundige. */
+var KBK_ENGINE = (function () {
+  var STATUS = {
+    asbest: { label: 'Asbesthoudend', cls: 'red' },
+    geen: { label: 'Niet-asbesthoudend', cls: 'blue' },
+    uitgesloten: { label: 'Uitgesloten / niet onderzocht', cls: 'orange' },
+    onvolledig: { label: 'Onvolledig onderzocht', cls: 'orange' },
+    nietgenoemd: { label: 'Niet in rapport', cls: 'orange' }
+  };
+  var SIGNAAL = {
+    asbest: { label: 'Asbest aangetroffen', cls: 'red', rank: 4 },
+    controle: { label: 'Controle noodzakelijk', cls: 'orange', rank: 3 },
+    info: { label: 'Afstemmen', cls: 'grey', rank: 1 },
+    geen: { label: 'Geen asbest aangetoond', cls: 'blue', rank: 2 }
+  };
+
+  var REL = {
+    vloerzeil: ['vloerzeil', 'vloerbedekking'], vloerbedekking: ['vloerzeil', 'vloerbedekking'],
+    kit: ['kit', 'beglazingskit'], beglazingskit: ['beglazingskit', 'kit'],
+    leidingisolatie: ['leidingisolatie', 'leidingen'], leidingen: ['leidingisolatie', 'leidingen'],
+    dakplaten: ['dakplaten', 'dak'], plaat: ['plaat', 'beplating'], beplating: ['beplating', 'plaat']
+  };
+  function canonMatch(a, b) { if (a === b) return true; var r = REL[a]; return !!(r && r.indexOf(b) > -1); }
+  function posMatch(a, b) { return !a || !b || a === b; }
+  function roomMatch(rep, wb) {
+    if (rep.indexOf('*') > -1) return true;
+    for (var i = 0; i < wb.length; i++) if (rep.indexOf(wb[i]) > -1) return true;
+    return false;
+  }
+  var ORDER = { asbest: 4, onvolledig: 3, uitgesloten: 2, geen: 1 };
+
+  function parseNL(d) { // 'dd-mm-jjjj' of 'jjjj-mm-dd'
+    if (!d) return null;
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d); if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+    m = /(\d{1,2})-(\d{1,2})-(\d{4})/.exec(d); if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
+    return null;
+  }
+  function fmt(d) { if (!d) return '-'; return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear(); }
+
+  function vergelijk(rapport, werkbon) {
+    var regels = werkbon.items.map(function (it) {
+      var hits = it.raakt.map(function (t) {
+        var m = rapport.items.filter(function (ri) {
+          return canonMatch(t.canon, ri.canon) && posMatch(t.pos, ri.pos) && roomMatch(ri.ruimtes, it.ruimtes);
+        });
+        var worst = m.reduce(function (w, ri) { return (!w || ORDER[ri.status] > ORDER[w.status]) ? ri : w; }, null);
+        return { raakt: t, matches: m, status: worst ? worst.status : 'nietgenoemd', bron: worst };
+      });
+      var sig, reden = [];
+      var st = hits.map(function (h) { return h.status; });
+      hits.forEach(function (h) {
+        var b = h.bron;
+        if (h.status === 'asbest') {
+          reden.push(h.raakt.label + ': ' + b.id + ' ' + b.materiaal.toLowerCase() + ' (' + b.soort + (b.rk && b.rk !== '-' ? ', risicoklasse ' + b.rk : '') + ').');
+          if (b.urgent) reden.push('Rapport: ruimtes gesloten houden tot sanering.');
+          if (/niet vermeld/i.test(b.rk || '')) reden.push('Risicoklasse ontbreekt in het rapport.');
+        } else if (h.status === 'uitgesloten') reden.push(h.raakt.label + ': uitgesloten in rapport (' + b.materiaal.toLowerCase() + ', ' + b.methode.toLowerCase() + '). Aanvullend onderzoek nodig.');
+        else if (h.status === 'onvolledig') reden.push(h.raakt.label + ': ' + b.materiaal.toLowerCase() + ' onvolledig onderzocht (' + b.soort.toLowerCase() + ').');
+        else if (h.status === 'nietgenoemd') { if (it.destructief) reden.push(h.raakt.label + ': niet in het rapport beschreven. Onbekend of dit is onderzocht.'); }
+        else reden.push(h.raakt.label + ': ' + b.id + ', ' + b.soort.toLowerCase() + ' (' + b.methode.toLowerCase() + ').');
+      });
+      if (st.indexOf('asbest') > -1) {
+        sig = 'asbest';
+        reden.push('Niet starten vóór sanering door een gecertificeerd bedrijf en akkoord van de deskundige.');
+      } else if (st.some(function (s) { return s === 'uitgesloten' || s === 'onvolledig'; }) || (it.destructief && st.indexOf('nietgenoemd') > -1)) {
+        sig = 'controle';
+      } else if (st.every(function (s) { return s === 'geen'; })) {
+        sig = 'geen';
+        reden.push('Geldt alleen voor het onderzochte materiaal; dit is geen vrijgave.');
+      } else {
+        sig = 'info';
+        reden.push('Niet-destructief werk; niet als bron in het rapport genoemd. Afstemmen met werkvoorbereiding.');
+      }
+      if (it.bouwkundig && rapport.scopeRenovatie && !it.ruimtes.some(function (r) { return rapport.scopeRenovatie.indexOf(r) > -1; })) {
+        if (sig !== 'asbest') sig = 'controle';
+        reden.push('Rapport is in deze ruimte niet geschikt voor bouwkundige ingrepen (alleen ' + rapport.scopeRenovatie.join(', ') + ').');
+      }
+      return { item: it, hits: hits, signaal: sig, reden: reden };
+    });
+
+    // Signaleringen op rapportniveau
+    var sign = [];
+    if (rapport.postcode && werkbon.postcode && rapport.postcode !== werkbon.postcode)
+      sign.push({ lvl: 'red', t: 'Adres van rapport (' + rapport.adres + ') en werkbon (' + werkbon.adres + ') komen niet overeen. Controleer de koppeling.' });
+    if (rapport.fictief) sign.push({ lvl: 'grey', t: 'Dit is een fictief testdocument; niet gebruiken voor echte werkzaamheden.' });
+    var gt = parseNL(rapport.geldigTot), start = parseNL(werkbon.startGepland);
+    if (gt && start && start > gt) sign.push({ lvl: 'orange', t: 'Rapport is geldig tot ' + fmt(gt) + ', maar de start is ' + fmt(start) + '. Rapport laten toetsen op actualiteit.' });
+    if (!rapport.geldigTot) sign.push({ lvl: 'orange', t: 'Geen geldigheidsdatum in het rapport gevonden.' });
+    var bj = rapport.bouwjaar || werkbon.bouwjaar;
+    if (bj && bj < 1994) sign.push({ lvl: 'orange', t: 'Bouwjaar ' + bj + ' (vóór 1994): verborgen asbesthoudende toepassingen blijven mogelijk.' });
+    (rapport.gaps || []).forEach(function (g) { sign.push({ lvl: 'orange', t: g }); });
+    (rapport.geplandRapport || []).forEach(function (g) {
+      var gedekt = werkbon.items.some(function (it) { return it.ruimtes.some(function (r) { return g.ruimtes.indexOf(r) > -1; }); });
+      if (!gedekt) sign.push({ lvl: 'grey', t: 'Het rapport noemt ' + g.id + ' (' + g.werk.toLowerCase() + '), maar dit staat niet op de werkbon.' });
+    });
+
+    var tel = { asbest: 0, controle: 0, geen: 0, info: 0 };
+    regels.forEach(function (r) { tel[r.signaal]++; });
+    var rt = { asbest: 0, geen: 0, uitgesloten: 0, onvolledig: 0 };
+    rapport.items.forEach(function (i) { rt[i.status]++; });
+    var niveau = tel.asbest > 0 && tel.controle > 0 ? 'Hoog' : (tel.asbest + tel.controle > 0 ? 'Midden' : 'Laag');
+    return { rapport: rapport, werkbon: werkbon, regels: regels, signaleringen: sign, tel: tel, rapportTel: rt, niveau: niveau };
+  }
+
+  /* ---------- Lokale tekstherkenning voor onbekende rapporten (indicatief) ---------- */
+  var MAT = [
+    ['vloerzeil', /vloerzeil|vinyl|onderlaag|backing|linoleum|vloerbedekking/i],
+    ['tegellijm', /tegellijm|lijmlaag|tegelwerk/i],
+    ['beglazingskit', /beglazingskit|stopverf/i],
+    ['kit', /\bkit\b|kozijnkit|kitvoeg/i],
+    ['vensterbank', /vensterbank/i],
+    ['ventilatie', /ventilatie|ontluchting|rookgasafvoer/i],
+    ['leidingisolatie', /leidingisolatie|isolatie.{0,15}leiding|bochtisolatie/i],
+    ['dakplaten', /golfplaat|golfplaten|dakplaten|leien/i],
+    ['beplating', /beplating|board|plaatmateriaal|vlakke plaat|\bplaat\b/i],
+    ['plafond', /plafond/i],
+    ['koof', /koof|koven|schacht/i],
+    ['spouw', /spouw/i],
+    ['kruipruimte', /kruipruimte/i]
+  ];
+  var ROOM = [
+    ['badkamer', /badkamer|douche/i], ['keuken', /keuken/i], ['toilet', /toilet|\bwc\b/i], ['meterkast', /meterkast/i],
+    ['hal', /\bhal\b|hallen|gang|overloop/i], ['woonkamer', /woonkamer/i], ['slaapkamer', /slaapkamer/i], ['zolder', /zolder/i],
+    ['berging', /berging|schuur/i], ['kelder', /kelder/i], ['dak', /\bdak\b/i], ['kruipruimte', /kruipruimte/i],
+    ['trappenhuis', /trappenhuis/i], ['gevel', /gevel/i], ['balkon', /balkon/i], ['trapkast', /trapkast/i], ['technische ruimte', /technische ruimte/i], ['lokaal', /lokaal/i]
+  ];
+  function roomsIn(s) { var r = []; ROOM.forEach(function (x) { if (x[1].test(s)) r.push(x[0]); }); return r; }
+
+  function heuristiek(text, bestand) {
+    var lines = text.split(/\n/).map(function (l) { return l.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
+    var flat = lines.join(' ');
+    var pc = /(\d{4})\s?([A-Z]{2})\b/.exec(flat);
+    var adr = /([A-Z][a-zé'\.]+(?:\s[A-Za-zé'\.]+){0,3}\s\d{1,4}[a-zA-Z]?)\s*,?\s*(\d{4}\s?[A-Z]{2})\s*(?:te\s)?([A-Z][a-zA-Z\s\-]+?)(?=\s{1}|$|[,.])/.exec(flat);
+    var bj = /bouwjaar[^0-9]{0,60}(1[89]\d\d|20[0-2]\d)/i.exec(flat) || /periode[^0-9]{0,80}(19\d\d)/i.exec(flat);
+    var nr = /(rapportnummer|projectnummer)\s*:?\s*([A-Z0-9][A-Z0-9.\-\/]{3,})/i.exec(flat);
+    var geldig = /geldig tot\s*:?\s*(\d{1,2}-\d{1,2}-\d{4})/i.exec(flat);
+    var items = [], seen = {}, mode = null;
+    for (var i = 0; i < lines.length; i++) {
+      var l = lines[i], ctx = l + ' ' + (lines[i + 1] || '');
+      if (l.length < 90) {
+        if (/niet[- ]?asbesthoudend|asbestvrij|geen asbest aangetroffen/i.test(l)) mode = 'geen';
+        else if (/uitsluit|beperking|niet ge(ï|i)nspecteerd|niet onderzocht|buiten (de )?scope/i.test(l)) mode = 'uitgesloten';
+        else if (/asbesthoudend/i.test(l)) mode = 'asbest';
+      }
+      var mat = null; for (var k = 0; k < MAT.length; k++) if (MAT[k][1].test(l)) { mat = MAT[k]; break; }
+      if (!mat) continue;
+      var st = null;
+      if (/(chrysotiel|amosiet|crocidoliet)/i.test(ctx) && /\d\s?%|aangetoond/i.test(ctx) && !/niet aangetoond|geen asbest|<\s?0,1/i.test(ctx)) st = 'asbest';
+      else if (/<\s?0,1|geen asbest|niet aantoonbaar|niet aangetoond/i.test(ctx)) st = 'geen';
+      else if (/geen inspectie|niet ge(ï|i)nspecteerd|buiten scope|uitgesloten|niet onderzocht/i.test(ctx)) st = 'uitgesloten';
+      else if (/geen monster|niet bemonsterd|onbekend/i.test(ctx)) st = 'onvolledig';
+      else if (mode && l.length < 160) st = mode;
+      if (!st) continue;
+      var rooms = roomsIn(ctx);
+      var key = mat[0] + '|' + st + '|' + rooms.join(',');
+      if (seen[key]) continue; seen[key] = 1;
+      var soort = (/(\d+[\-–,]?\d*\s?%[^.;]{0,25}(chrysotiel|amosiet|crocidoliet))/i.exec(ctx) || /(chrysotiel[^.;]{0,20}|amosiet)/i.exec(ctx) || [])[0];
+      items.push({
+        id: 'T' + (items.length + 1), materiaal: l.length > 70 ? l.slice(0, 70) + '…' : l, canon: mat[0],
+        locatie: rooms.length ? rooms.join(', ') : 'Niet eenduidig herkend', ruimtes: rooms.length ? rooms : ['*'],
+        pos: /wand|achter de (wand)?tegels/i.test(ctx) ? 'wand' : (/vloer|onder de (vloer)?tegels|plavuizen/i.test(ctx) ? 'vloer' : null),
+        status: st, soort: soort || (st === 'asbest' ? 'Asbest aangetoond' : st === 'geen' ? 'Geen asbest aangetoond' : '-'),
+        hoeveelheid: ((/(\d+[,.]?\d*\s?(m²|m2|st|stuks|m1|m)\b)/i.exec(ctx) || [])[0]) || '-', rk: ((/risicoklasse\s*:?\s*(\d[A-Za-z]?)/i.exec(ctx) || [])[1]) || 'Niet herkend',
+        methode: 'Tekstherkenning', detail: 'Automatisch herkend, controleer in het rapport.'
+      });
+      if (items.length > 40) break;
+    }
+    var gaps = ['Dit rapport is met lokale tekstherkenning gelezen (indicatief). Laat de deskundige de bronnen en uitsluitingen in het rapport zelf controleren.'];
+    if (!items.some(function (x) { return x.status === 'uitgesloten'; })) gaps.push('Geen uitsluitingen of beperkingen herkend. Controleer of het rapport een hoofdstuk beperkingen heeft.');
+    if (/gestaakt/i.test(flat)) gaps.push('Het rapport vermeldt dat het onderzoek (deels) is gestaakt.');
+    return {
+      key: 'upload', fingerprint: [], bestand: bestand, paginas: null, fictief: /fictief/i.test(flat),
+      titel: 'Geüpload rapport', adres: adr ? (adr[1] + ', ' + adr[2] + ' ' + adr[3]).trim() : 'Niet herkend', postcode: pc ? pc[1] + pc[2] : null,
+      rapportnr: nr ? nr[2] : 'Niet herkend', bureau: 'Niet herkend', opdrachtgever: '-', onderzoeksdatum: '-', rapportdatum: '-',
+      geldigTot: geldig ? geldig[1] : null, bouwjaar: bj ? +bj[1] : null, type: 'Onbekend', reikwijdte: 'Niet herkend', geschiktheid: 'Niet herkend',
+      items: items, gaps: gaps, geplandRapport: [], methode: 'lokaal'
+    };
+  }
+
+  function herken(text, lijst, veld) {
+    var t = text.replace(/\s+/g, ' ');
+    for (var i = 0; i < lijst.length; i++) {
+      var fp = lijst[i][veld || 'fingerprint'] || [];
+      for (var j = 0; j < fp.length; j++) if (t.indexOf(fp[j]) > -1) return lijst[i];
+    }
+    return null;
+  }
+
+  var VOCAB_M = ['vloerzeil', 'tegellijm', 'kit', 'beglazingskit', 'vensterbank', 'ventilatie', 'leidingisolatie', 'dakplaten', 'plaat', 'beplating', 'plafond', 'koof', 'spouw', 'kozijn', 'kruipruimte', 'keukenblok', 'radiator', 'cv', 'gevel', 'stof', 'wand', 'overig'];
+  var VOCAB_R = ['badkamer', 'keuken', 'toilet', 'meterkast', 'hal', 'woonkamer', 'slaapkamer', 'zolder', 'berging', 'kelder', 'dak', 'kruipruimte', 'trappenhuis', 'gevel', 'balkon', 'trapkast', 'technische ruimte', 'lokaal', 'gang', '*'];
+
+  function aiExtractPrompt(text) {
+    return 'Je bent een extractie-assistent voor KBK Bouwgroep. Lees dit Nederlandse asbestinventarisatierapport en geef UITSLUITEND JSON terug (geen uitleg). Verzin niets: wat niet in de tekst staat wordt "Niet vermeld".\n' +
+      'Schema: {"titel":str,"adres":str,"postcode":"1234AB"|null,"rapportnr":str,"bureau":str,"opdrachtgever":str,"onderzoeksdatum":str,"rapportdatum":str,"geldigTot":"jjjj-mm-dd"|null,"bouwjaar":int|null,"type":str,"reikwijdte":str,"geschiktheid":str,"fictief":bool,' +
+      '"scopeRenovatie":[ruimte]|null,"items":[{"id":str,"materiaal":str,"canon":one of ' + JSON.stringify(VOCAB_M) + ',"locatie":str,"ruimtes":[one of ' + JSON.stringify(VOCAB_R) + '],"pos":"wand"|"vloer"|"plafond"|"kozijn"|"dak"|null,"status":"asbest"|"geen"|"uitgesloten"|"onvolledig","soort":str,"hoeveelheid":str,"rk":str,"methode":str,"detail":str,"laag":str|null}],' +
+      '"gaps":[str],"geplandRapport":[{"id":str,"werk":str,"locatie":str,"planning":str,"bronnen":[str],"ruimtes":[ruimte]}]}\n' +
+      'Regels: elke asbesthoudende bron, elke niet-asbesthoudende bron, elke visueel niet-verdachte waarneming (status "geen", methode "Visuele inspectie") en elke uitsluiting/beperking/niet-geïnspecteerde plek (status "uitgesloten") wordt een item. Asbestverdacht maar niet bemonsterd of zonder labuitslag = "onvolledig". "*" bij ruimtes = geldt voor de hele woning. Achterliggende lagen (onderlaag, backing, lijmlaag achter/onder tegels) noem je in "laag". ' +
+      '"gaps" = ontbrekende informatie, tegenstrijdigheden en punten die een deskundige moet controleren (kort, Nederlands).\n\nRAPPORTTEKST:\n' + text.slice(0, 90000);
+  }
+  function normalizeAI(j, bestand) {
+    j = j || {};
+    j.key = 'upload'; j.bestand = bestand; j.methode = 'claude';
+    j.items = (j.items || []).map(function (x, i) {
+      return { id: String(x.id || 'B' + (i + 1)), materiaal: String(x.materiaal || '-'), canon: VOCAB_M.indexOf(x.canon) > -1 ? x.canon : 'overig', locatie: String(x.locatie || '-'),
+        ruimtes: (x.ruimtes && x.ruimtes.length ? x.ruimtes : ['*']).map(String), pos: x.pos || null, status: ['asbest', 'geen', 'uitgesloten', 'onvolledig'].indexOf(x.status) > -1 ? x.status : 'onvolledig',
+        soort: String(x.soort || '-'), hoeveelheid: String(x.hoeveelheid || '-'), rk: String(x.rk || 'Niet vermeld'), methode: String(x.methode || '-'), detail: String(x.detail || ''), laag: x.laag || null };
+    });
+    j.gaps = (j.gaps || []).map(String); j.geplandRapport = j.geplandRapport || [];
+    if (j.postcode) j.postcode = String(j.postcode).replace(/\s/g, '').toUpperCase();
+    return j;
+  }
+
+  function werkbonTekst(text, lijst) { return herken(text, lijst, 'nrFp'); }
+
+  return { vergelijk: vergelijk, heuristiek: heuristiek, herken: herken, aiExtractPrompt: aiExtractPrompt, normalizeAI: normalizeAI, STATUS: STATUS, SIGNAAL: SIGNAAL, roomsIn: roomsIn, VOCAB_M: VOCAB_M, VOCAB_R: VOCAB_R, parseNL: parseNL, fmt: fmt };
+})();
+if (typeof module !== 'undefined') module.exports = KBK_ENGINE;
+
+{
+var D = KBK_DATA, E = KBK_ENGINE;
+var $ = function (s) { return document.querySelector(s); };
+function lc(s) { s = String(s); return s.charAt(0).toLowerCase() + s.slice(1); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+D.WERKBONNEN.forEach(function (w) { w.fingerprint = [w.nr]; });
+
+var IC = {
+  pdf: '<svg width="44" height="50" viewBox="0 0 44 50"><path d="M6 2h22l12 12v32a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#fff" stroke="#d92d20" stroke-width="2.4"/><path d="M28 2v12h12" fill="none" stroke="#d92d20" stroke-width="2.4"/><rect x="2" y="26" width="32" height="14" rx="2" fill="#d92d20"/><text x="18" y="37" fill="#fff" font-size="10" font-weight="800" text-anchor="middle" font-family="Inter,Arial">PDF</text></svg>',
+  wb: '<svg width="44" height="50" viewBox="0 0 44 50"><rect x="4" y="5" width="34" height="42" rx="4" fill="#fff" stroke="#1d4ed8" stroke-width="2.4"/><rect x="13" y="2" width="16" height="7" rx="2" fill="#1d4ed8"/><path d="M11 20h20M11 27h20M11 34h12" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  check: '<svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#16a34a"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  warn: '<svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2L1 21h22z" fill="#f59e0b"/><path d="M12 9v5M12 17.2v.3" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  scales: '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 21h10M5 7h14M12 5a1 1 0 1 0 0-.01"/><path d="M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/></svg>',
+  wrench: '<svg width="28" height="28" viewBox="0 0 24 24" fill="#1d4ed8"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>',
+  bot: '<svg width="34" height="34" viewBox="0 0 32 32"><rect x="15" y="2" width="2" height="5" fill="#0f1a2e"/><circle cx="16" cy="3" r="2.2" fill="#0f1a2e"/><rect x="4" y="8" width="24" height="18" rx="7" fill="#0f1a2e"/><rect x="1" y="14" width="3" height="7" rx="1.5" fill="#0f1a2e"/><rect x="28" y="14" width="3" height="7" rx="1.5" fill="#0f1a2e"/><circle cx="11.5" cy="17" r="2.6" fill="#fff"/><circle cx="20.5" cy="17" r="2.6" fill="#fff"/><path d="M12 22.5h8" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  user: '<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="8" r="4.5"/><path d="M3 22a9 9 0 0 1 18 0z"/></svg>',
+  info: '<svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#1d4ed8"/><path d="M12 11v6M12 7.2v.3" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  up: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v11M15 5.9L14 10h5.8a2 2 0 0 1 2 2.3l-1.4 7A2 2 0 0 1 18.4 21H7V10l4-8a3 3 0 0 1 4 3.9z"/><path d="M3 10h4v11H3z"/></svg>',
+  down: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V3M9 18.1L10 14H4.2a2 2 0 0 1-2-2.3l1.4-7A2 2 0 0 1 5.6 3H17v11l-4 8a3 3 0 0 1-4-3.9z"/><path d="M21 14h-4V3h4z"/></svg>'
+};
+var TITLES = {
+  analyse: ['Vergelijking &amp; Advies', 'Asbestinventarisatierapport vergelijken met de KBK-opname (werkbon)'],
+  opname: ['Opname op locatie', 'De projectbegeleider legt de werkzaamheden vast en deelt de werkbon met kantoor'],
+  rapporten: ['Inbox rapporten', 'Asbestrapporten die via Outlook binnenkomen en door de koppeltool aan een werkbon worden gekoppeld'],
+  dossiers: ['Dossiers', 'Elke werkbon doorloopt het proces van opname tot besluit van de deskundige'],
+  proces: ['Werkproces', 'Van opname op locatie tot beoordeling door de deskundige'],
+  account: ['Account', 'Je gegevens binnen KBK AsbestCheck AI'],
+  instellingen: ['Instellingen', 'AI-modus en privacy']
+};
+
+var S = { rapport: null, werkbon: null, rFile: null, wFile: null, rText: '', busyR: false, busyW: false, turns: [], sample: null, aiMode: 'auto', fb: {}, deskundige: {} };
+try { S.aiMode = localStorage.getItem('kbk-ai') || 'auto'; } catch (e) {}
+if (window.claude && claude.use) claude.use('sample').then(function (s) { S.sample = s; renderSettings(); }).catch(function () {});
+function aiOn() { return S.sample && S.aiMode === 'auto'; }
+
+/* ---------- navigatie ---------- */
+function show(v) {
+  document.querySelectorAll('.nav button').forEach(function (b) { b.classList.toggle('on', b.dataset.view === v); });
+  document.querySelectorAll('.view').forEach(function (s) { s.classList.toggle('on', s.id === 'view-' + v); });
+  $('#title').innerHTML = TITLES[v][0]; $('#sub').textContent = TITLES[v][1];
+  if (v === 'opname') renderOpname(); if (v === 'rapporten') renderRapporten(); if (v === 'proces') renderProces();
+  if (v === 'account') renderAccount(); if (v === 'dossiers') renderDossiers(); if (v === 'instellingen') renderSettings();
+  window.scrollTo(0, 0);
+}
+$('#nav').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) show(b.dataset.view); });
+function toast(t) { var d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2600); }
+
+/* ---------- upload-slots ---------- */
+function slot(kind) {
+  var isR = kind === 'rapport', obj = isR ? S.rapport : S.werkbon, f = isR ? S.rFile : S.wFile, busy = isR ? S.busyR : S.busyW;
+  if (!obj && !busy) {
+    return '<div class="card file drop" data-drop="' + kind + '">' + (isR ? IC.pdf : IC.wb) + '<b>' + (isR ? 'Asbestinventarisatierapport' : 'KBK-opname / werkbon') + '</b><small>Sleep een PDF hierheen of klik om te kiezen' + (isR ? '' : ', of maak een opname') + '</small></div>';
+  }
+  var name = f ? f.name : (isR ? obj.bestand : obj.nr + '.pdf');
+  var meta = f ? f.meta : '';
+  var badge = busy ? '<span class="badge busy">' + esc(busy) + '</span>' : '<span class="badge">' + IC.check + ' Verwerkt</span>';
+  return '<div class="card file">' + (isR ? IC.pdf : IC.wb) + '<div class="meta"><span class="lbl">' + (isR ? 'Asbestinventarisatierapport' : 'KBK-opname (werkbon)') + '</span><b>' + esc(name) + '</b><small>' + esc(meta) + '</small></div>' + badge + '<button class="x" data-clear="' + kind + '" title="Verwijderen">×</button></div>';
+}
+function renderSlots() {
+  $('#slot-rapport').innerHTML = slot('rapport'); $('#slot-werkbon').innerHTML = slot('werkbon');
+}
+document.addEventListener('click', function (e) {
+  var c = e.target.closest('[data-clear]');
+  if (c) { if (c.dataset.clear === 'rapport') { S.rapport = null; S.rFile = null; S.rText = ''; } else { S.werkbon = null; S.wFile = null; } $('#koppel').classList.add('hidden'); renderAll(); return; }
+  var d = e.target.closest('[data-drop]');
+  if (d) $(d.dataset.drop === 'rapport' ? '#fileR' : '#fileW').click();
+  var cs = e.target.closest('[data-case]');
+  if (cs) { S.dossier = null; loadCase(cs.dataset.case); show('analyse'); }
+  var ch = e.target.closest('[data-q]');
+  if (ch) { $('#q').value = ch.dataset.q; ask(); }
+});
+['dragover', 'dragleave', 'drop'].forEach(function (ev) {
+  document.addEventListener(ev, function (e) {
+    var d = e.target.closest && e.target.closest('[data-drop]');
+    if (ev !== 'dragleave') e.preventDefault();
+    document.querySelectorAll('[data-drop]').forEach(function (x) { x.classList.remove('over'); });
+    if (!d) { if (ev === 'drop' && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], null); return; }
+    if (ev === 'dragover') d.classList.add('over');
+    if (ev === 'drop' && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], d.dataset.drop);
+  });
+});
+$('#fileR').onchange = function () { if (this.files[0]) handleFile(this.files[0], 'rapport'); this.value = ''; };
+$('#fileW').onchange = function () { if (this.files[0]) handleFile(this.files[0], 'werkbon'); this.value = ''; };
+$('#attachFile').onchange = function () { if (this.files[0]) handleFile(this.files[0], null); this.value = ''; };
+
+function vandaag() { return E.fmt(new Date()); }
+function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+async function pdfText(file) {
+  if (!window.pdfjsLib) throw new Error('PDF-lezer kon niet laden (geen internet?)');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  var buf = await file.arrayBuffer();
+  var doc = await pdfjsLib.getDocument({ data: buf }).promise;
+  var out = [];
+  for (var p = 1; p <= doc.numPages; p++) {
+    var tc = await (await doc.getPage(p)).getTextContent();
+    var t = '', prev = null;
+    tc.items.forEach(function (i) {
+      if (prev) {
+        var sameLine = Math.abs(i.transform[5] - prev.transform[5]) < 2;
+        var gap = i.transform[4] - (prev.transform[4] + prev.width);
+        if (prev.hasEOL || !sameLine) t += '\n'; else if (gap > 1.2 && !/\s$/.test(t) && !/^\s/.test(i.str)) t += ' ';
+      }
+      t += i.str; prev = i;
+    });
+    out.push(t);
+  }
+  return { text: out.join('\n'), pages: doc.numPages };
+}
+
+async function handleFile(file, kind) {
+  if (!/pdf$/i.test(file.type) && !/\.pdf$/i.test(file.name)) { toast('Kies een PDF-bestand.'); return; }
+  var meta = 'Geüpload: ' + vandaag() + ' • ' + (file.size / 1048576).toFixed(1).replace('.', ',') + ' MB';
+  var tmpKind = kind || 'rapport';
+  if (tmpKind === 'rapport') { S.busyR = 'PDF lezen…'; S.rFile = { name: file.name, meta: meta }; } else { S.busyW = 'PDF lezen…'; S.wFile = { name: file.name, meta: meta }; }
+  renderSlots(); show('analyse');
+  var res;
+  try { res = await pdfText(file); } catch (err) { S.busyR = S.busyW = false; S.rFile = S.wFile = S.rFile && S.rapport ? S.rFile : null; renderAll(); botSay('<p>Dit PDF-bestand kon ik niet lezen: ' + esc(err.message) + '</p>'); return; }
+  var text = res.text;
+  var isWb = /KBK-?WB-?\d{4}-\d+/.test(text) && /Opname\s*\/\s*werkbon/i.test(text);
+  if (!kind) kind = isWb ? 'werkbon' : 'rapport';
+  if (kind !== tmpKind) { // verplaats de laadstatus naar het juiste slot
+    if (kind === 'werkbon') { S.wFile = S.rFile; S.rFile = S.rapport ? S.rFile : null; S.busyR = false; S.busyW = 'PDF lezen…'; }
+    else { S.rFile = S.wFile; S.wFile = S.werkbon ? S.wFile : null; S.busyW = false; S.busyR = 'PDF lezen…'; }
+  }
+  var fileMeta = meta + ' • ' + res.pages + ' pagina' + (res.pages === 1 ? '' : "'s");
+  if (kind === 'werkbon') {
+    S.wFile = { name: file.name, meta: fileMeta };
+    S.busyW = 'Werkzaamheden herkennen…'; renderSlots(); await sleep(500);
+    var wb = E.herken(text, D.WERKBONNEN);
+    if (!wb && aiOn()) { S.busyW = 'Claude leest de werkbon…'; renderSlots(); wb = await aiWerkbon(text); }
+    S.busyW = false;
+    if (!wb) { S.wFile = null; renderAll(); botSay('<p>Deze werkbon herken ik niet als KBK-opname. Gebruik <b>Opname (werkbon)</b> om de werkzaamheden in te voeren, of kies een voorbeeld in <b>Mijn rapporten</b>.</p>'); return; }
+    S.werkbon = wb;
+    autoKoppel('werkbon');
+  } else {
+    S.rFile = { name: file.name, meta: fileMeta }; S.rText = text;
+    S.busyR = 'Bronnen herkennen…'; renderSlots(); await sleep(400);
+    var r = E.herken(text, D.RAPPORTEN), how;
+    if (r) { r = JSON.parse(JSON.stringify(r)); r.methode = 'bekend'; how = 'bekend'; }
+    else if (aiOn()) {
+      S.busyR = 'Claude analyseert het rapport…'; renderSlots();
+      try { r = E.normalizeAI(await S.sample.json(E.aiExtractPrompt(text), { modelTier: 'default' }), file.name); r.paginas = res.pages; how = 'claude'; }
+      catch (err) { r = null; if (err && err.code === 'not_granted') S.aiMode = 'local'; }
+    }
+    if (!r) { r = E.heuristiek(text, file.name); r.paginas = res.pages; how = 'lokaal'; }
+    S.busyR = 'Koppelen aan werkbon…'; renderSlots(); await sleep(400);
+    S.busyR = false; S.rapport = r;
+    autoKoppel('rapport');
+    if (how === 'lokaal') botSay('<p>Dit rapport is gelezen met de <b>lokale tekstherkenning</b> (zonder internet-AI). De herkende bronnen zijn indicatief: controleer ze in het rapport zelf.</p>');
+  }
+  S.turns = []; renderAll(); scrollToResult();
+}
+
+async function aiWerkbon(text) {
+  try {
+    var j = await S.sample.json('Lees deze werkbon/opname van een bouwbedrijf en geef ALLEEN JSON: {"nr":str,"adres":str,"postcode":"1234AB"|null,"soort":str,"projectbegeleider":str,"opnamedatum":str,"startGepland":"jjjj-mm-dd"|null,"items":[{"code":str,"ruimte":str,"ruimtes":[one of ' + JSON.stringify(E.VOCAB_R) + '],"werk":str,"raakt":[{"canon":one of ' + JSON.stringify(E.VOCAB_M.concat(['verf'])) + ',"label":str,"pos":"wand"|"vloer"|"plafond"|"kozijn"|"dak"|null}],"destructief":bool}]}. Noem bij "raakt" ook achterliggende lagen (tegellijm, onderlaag). Verzin niets.\n\n' + text.slice(0, 40000), { modelTier: 'default' });
+    if (!j || !j.items || !j.items.length) return null;
+    j.key = 'upload'; j.nr = String(j.nr || 'Werkbon'); j.object = j.object || '-'; j.opdrachtgever = j.opdrachtgever || '-'; j.bewoond = j.bewoond || '-';
+    j.items.forEach(function (i, n) { i.code = String(i.code || ('0' + (n + 1)).slice(-2)); i.ruimtes = i.ruimtes && i.ruimtes.length ? i.ruimtes : ['*']; i.raakt = (i.raakt || []).map(function (t) { return { canon: String(t.canon || 'overig'), label: String(t.label || t.canon), pos: t.pos || null }; }); i.destructief = i.destructief !== false; });
+    if (j.postcode) j.postcode = String(j.postcode).replace(/\s/g, '').toUpperCase();
+    return j;
+  } catch (e) { return null; }
+}
+
+function straat(a) { return String(a || '').split(',')[0].trim().toLowerCase(); }
+function autoKoppel(nieuw) {
+  var k = $('#koppel');
+  if (nieuw === 'rapport' && S.rapport) {
+    var w = D.WERKBONNEN.filter(function (x) { return (S.rapport.postcode && x.postcode === S.rapport.postcode) || straat(x.adres) === straat(S.rapport.adres); })[0];
+    if (w && (!S.werkbon || S.werkbon.postcode !== S.rapport.postcode)) {
+      S.werkbon = w; S.wFile = { name: w.nr + '_opname.pdf', meta: 'Opname ' + w.opnamedatum + ' • ' + w.projectbegeleider };
+      k.innerHTML = '<span class="dot"></span>Rapport automatisch gekoppeld aan werkbon <b>' + esc(w.nr) + '</b> op basis van adres en postcode (' + esc(w.adres) + ').';
+      k.classList.remove('hidden'); return;
+    }
+  }
+  if (nieuw === 'werkbon' && S.werkbon && !S.rapport) {
+    var r = D.RAPPORTEN.filter(function (x) { return x.postcode && x.postcode === S.werkbon.postcode; })[0];
+    if (r) {
+      S.rapport = JSON.parse(JSON.stringify(r)); S.rapport.methode = 'bekend'; S.rFile = { name: r.bestand, meta: 'Ontvangen via Outlook • ' + r.paginas + " pagina's" };
+      k.innerHTML = '<span class="dot"></span>Bijbehorend rapport gevonden in de inbox en automatisch gekoppeld (' + esc(r.adres) + ').'; k.classList.remove('hidden'); return;
+    }
+  }
+  if (S.rapport && S.werkbon && S.rapport.postcode && S.werkbon.postcode && S.rapport.postcode === S.werkbon.postcode) {
+    k.innerHTML = '<span class="dot"></span>Rapport en werkbon horen bij hetzelfde adres (' + esc(S.werkbon.adres) + ').'; k.classList.remove('hidden');
+  } else k.classList.add('hidden');
+}
+
+function loadCase(key) {
+  var r = D.RAPPORTEN.filter(function (x) { return x.key === key; })[0], w = D.WERKBONNEN.filter(function (x) { return x.key === key; })[0];
+  S.rapport = JSON.parse(JSON.stringify(r)); S.rapport.methode = 'bekend';
+  S.rFile = { name: r.bestand, meta: 'Ontvangen via Outlook • ' + r.mb + ' MB • ' + r.paginas + " pagina's" };
+  S.werkbon = w; S.wFile = { name: w.nr + '_opname.pdf', meta: 'Opname ' + w.opnamedatum + ' • ' + w.projectbegeleider };
+  S.rText = ''; S.turns = [];
+  var k = $('#koppel'); k.innerHTML = '<span class="dot"></span>Rapport automatisch gekoppeld aan werkbon <b>' + esc(w.nr) + '</b> op basis van adres en postcode (' + esc(w.adres) + ').'; k.classList.remove('hidden');
+  $('#chat').innerHTML = '';
+  renderAll();
+}
+
+/* ---------- resultaat ---------- */
+function pill(cls, t) { return '<span class="pill ' + cls + '">' + esc(t) + '</span>'; }
+function stPill(st) { var s = E.STATUS[st]; return pill(s.cls, s.label); }
+function sigPill(sg) { var s = E.SIGNAAL[sg]; return pill(s.cls, s.label); }
+
+function renderResult() {
+  var el = $('#result');
+  if (!S.rapport || !S.werkbon) {
+    el.innerHTML = '<div class="card empty"><h2>' + (S.rapport || S.werkbon ? 'Nog één document nodig' : 'Start een vergelijking') + '</h2><p class="muted">Upload een asbestinventarisatierapport en een KBK-opname, of open een voorbeeldcasus.</p><div class="cases" style="margin-top:14px;text-align:left">' +
+      D.RAPPORTEN.map(function (r) { return '<button class="card case" data-case="' + r.key + '" style="cursor:pointer;text-align:left"><h3>' + esc(r.adres.split(',')[0]) + '</h3><small>' + esc(r.bestand) + '</small><div class="row">' + (r.fictief ? pill('grey', 'Fictief') : pill('blue', 'Echt rapport')) + '</div></button>'; }).join('') + '</div></div>';
+    return;
+  }
+  var v = E.vergelijk(S.rapport, S.werkbon); S.v = v;
+  var r = S.rapport, w = S.werkbon, t = v.tel, rt = v.rapportTel, n = v.regels.length;
+  var bronLabel = { bekend: 'Herkend rapport (gecontroleerde extractie)', claude: 'Geanalyseerd door Claude', lokaal: 'Lokale tekstherkenning (indicatief)' }[r.methode] || '';
+  var samen = t.asbest + ' van de ' + n + ' werkzaamheden raken asbesthoudend materiaal, ' + t.controle + ' vragen controle omdat het rapport ze niet (volledig) afdekt' + (t.geen ? ', en bij ' + t.geen + ' is in het onderzochte materiaal geen asbest aangetoond' : '') + '. Een deskundige beoordeelt de vervolgstap.';
+  var topSig = [];
+  v.regels.filter(function (x) { return x.signaal === 'asbest'; }).forEach(function (x) { topSig.push(['red', x.item.ruimte + ': ' + lc(x.item.werk) + ' raakt asbest.']); });
+  v.regels.filter(function (x) { return x.signaal === 'controle'; }).forEach(function (x) { topSig.push(['orange', x.item.ruimte + ': ' + lc(x.item.werk) + ' is niet (volledig) onderzocht.']); });
+  var shown = topSig.slice(0, 4), meer = topSig.length - shown.length;
+  var niveauCls = { Hoog: 'red', Midden: 'amber', Laag: 'green' }[v.niveau];
+  var ruimtes = []; w.items.forEach(function (i) { if (ruimtes.indexOf(i.ruimte) < 0) ruimtes.push(i.ruimte); });
+
+  var h = '<div class="summary">' + IC.scales + '<div><b>Samenvatting:</b> ' + esc(samen) + '</div></div>';
+  h += '<div class="cols3">';
+  h += '<div class="card box"><h3>Rapport – Hoofdpunten</h3><ul>' +
+    li('Asbestbronnen: ' + rt.asbest + ' gevonden') + li('Niet-asbesthoudend: ' + rt.geen) + li('Uitgesloten of onvolledig: ' + (rt.uitgesloten + rt.onvolledig)) +
+    li('Bureau: ' + r.bureau) + li('Geldig tot: ' + (r.geldigTot ? E.fmt(E.parseNL(r.geldigTot)) : 'niet vermeld')) +
+    '<li>' + IC.check + '<span>Signaleringsniveau: ' + pill(niveauCls, v.niveau) + '</span></li>' + (bronLabel ? '<li class="sub">' + esc(bronLabel) + '</li>' : '') + '</ul></div>';
+  h += '<div class="card box"><h3>Opname – Hoofdpunten</h3><ul>' + li('Werkbon: ' + w.nr + ' (' + w.soort.toLowerCase() + ')') + li('Geplande werkzaamheden: ' + n) +
+    '<li>' + IC.check + '<b>Ruimtes:</b></li>' + ruimtes.slice(0, 5).map(function (x) { return '<li class="sub">- ' + esc(x) + '</li>'; }).join('') + (ruimtes.length > 5 ? '<li class="sub">+ ' + (ruimtes.length - 5) + ' meer</li>' : '') +
+    li('Start gepland: ' + (w.startGepland ? E.fmt(E.parseNL(w.startGepland)) : '-')) + '</ul></div>';
+  h += '<div class="card box"><h3>' + IC.warn + ' Belangrijkste signaleringen</h3><ul>' + shown.map(function (s) { return '<li><span class="dotli ' + s[0] + '"></span><span>' + esc(s[1]) + '</span></li>'; }).join('') + (meer > 0 ? '<li class="sub">+ ' + meer + ' andere werkzaamheden met een signaal</li>' : '') + (topSig.length ? '' : '<li><span class="dotli grey"></span><span>Geen werkzaamheden met een rood of oranje signaal. Laat de deskundige dit bevestigen.</span></li>') + '</ul></div>';
+  h += '</div>';
+
+  // 1. vergelijking per werkzaamheid
+  h += '<div class="card sec"><h2>1. Vergelijking per werkzaamheid <small>werkbon ' + esc(w.nr) + ' tegen rapport</small></h2><div class="scroll"><table class="stack"><thead><tr><th>Werkzaamheid</th><th>Ruimte</th><th>Geraakte materialen en lagen</th><th>Wat zegt het rapport?</th><th>Signaal</th></tr></thead><tbody>' +
+    v.regels.map(function (x) {
+      return '<tr><td data-l="Werkzaamheid"><div><b>' + esc(x.item.code) + '</b> ' + esc(x.item.werk) + '</div></td><td data-l="Ruimte"><div>' + esc(x.item.ruimte) + '</div></td><td data-l="Raakt"><div>' +
+        x.hits.map(function (hh) { return esc(hh.raakt.label); }).join('<br>') + '</div></td><td data-l="Rapport"><div>' +
+        x.hits.map(function (hh) { return '<span class="hitl">' + stPill(hh.status) + (hh.bron ? ' <small>' + esc(hh.bron.id) + '</small>' : '') + '</span>'; }).join('') +
+        '<span class="why">' + x.reden.map(esc).join(' ') + '</span></div></td><td data-l="Signaal"><div>' + sigPill(x.signaal) + '</div></td></tr>';
+    }).join('') + '</tbody></table></div></div>';
+
+  // 2. rapportoverzicht
+  h += '<div class="card sec"><h2>2. Wat staat er in het rapport? <small>' + esc(r.adres) + '</small></h2><div class="tiles">' +
+    tile('', rt.asbest + rt.geen + rt.onvolledig, 'onderdelen onderzocht') + tile('red', rt.asbest, 'asbesthoudend') + tile('blue', rt.geen, 'niet-asbesthoudend') + tile('orange', rt.uitgesloten + rt.onvolledig, 'uitgesloten of onvolledig') + '</div>' +
+    '<div class="scroll"><table class="stack"><thead><tr><th>Bron</th><th>Materiaal / laag</th><th>Locatie</th><th>Status</th><th>Uitslag</th><th>Hoeveelheid</th><th>Risicoklasse</th></tr></thead><tbody>' +
+    r.items.map(function (i) {
+      return '<tr><td data-l="Bron"><div>' + esc(i.id) + '</div></td><td data-l="Materiaal"><div>' + esc(i.materiaal) + (i.laag ? '<span class="lyr">achterliggende laag: ' + esc(i.laag) + '</span>' : '') + '</div></td><td data-l="Locatie"><div>' + esc(i.locatie) + '</div></td><td data-l="Status"><div>' + stPill(i.status) + '</div></td><td data-l="Uitslag"><div>' + esc(i.soort) + (i.detail ? '<span class="why">' + esc(i.detail) + '</span>' : '') + '</div></td><td data-l="Hoeveelheid"><div>' + esc(i.hoeveelheid) + '</div></td><td data-l="Risicoklasse"><div>' + esc(i.rk) + '</div></td></tr>';
+    }).join('') + '</tbody></table></div></div>';
+
+  // 3. ontbrekende info
+  h += '<div class="card sec"><h2>3. Ontbrekende informatie en controlepunten</h2><ul style="list-style:none;margin:0;padding:0">' +
+    v.signaleringen.map(function (s) { return '<li style="display:flex;gap:10px;padding:3px 0"><span class="dotli ' + s.lvl + '"></span><span>' + esc(s.t) + '</span></li>'; }).join('') + '</ul>' +
+    '<div class="duo"><div class="concl">' + IC.check + '<div><b>Conclusie</b><p>' + esc(conclusie(v)) + '</p></div></div><div class="letop">' + IC.warn + '<div><b>Let op</b><p>AsbestCheck AI geeft geen oordeel of werk veilig is. Ook bij "geen asbest aangetoond" geldt dat alleen het onderzochte materiaal is beoordeeld. De deskundige beslist over de vervolgstap.</p></div></div></div></div>';
+
+  // advies + stappenplan
+  var adv = advies(v);
+  h += '<div class="advies"><div><h2>' + IC.check + ' Advies voor de projectbegeleider</h2><p>Op basis van het rapport en de opname adviseren wij de volgende acties:</p><ol class="num">' + adv.map(function (a) { return '<li><span><b>' + esc(a[0]) + ':</b> ' + esc(a[1]) + '</span></li>'; }).join('') + '</ol></div>' +
+    '<div class="belangrijk"><b>' + IC.check + ' Belangrijk</b>Neem bij twijfel altijd contact op met een deskundige (DIA/DAV of asbestdeskundige). AI signaleert, de deskundige beslist.</div></div>';
+  h += '<div class="plan"><div><h2>' + IC.wrench + ' Wat moet de projectbegeleider doen? (Stappenplan)</h2><ol class="num">' + stappen(v).map(function (s) { return '<li><span>' + esc(s) + '</span></li>'; }).join('') + '</ol></div>' +
+    '<div class="letop"><b>' + IC.warn + ' Let op</b><p>Werk nooit zelf aan asbesthoudende of niet-onderzochte materialen. Asbest mag alleen door een gecertificeerd saneringsbedrijf worden verwijderd.</p></div></div>';
+  var dp = dossierPanel(w);
+  h += dp || '<div class="actions"><button class="btn" data-q="Welke informatie ontbreekt in het rapport?">Wat ontbreekt er?</button><span class="muted" style="align-self:center">Losse vergelijking zonder dossier. Via Dossiers loopt het proces door naar de deskundige.</span></div>';
+  h += '<div class="feedback">Was dit een nuttig advies? <button data-fb="up" class="' + (S.fb[w.nr] === 'up' ? 'on' : '') + '" title="Ja">' + IC.up + '</button><button data-fb="down" class="' + (S.fb[w.nr] === 'down' ? 'on' : '') + '" title="Nee">' + IC.down + '</button></div>';
+  el.innerHTML = h;
+  el.querySelectorAll('[data-fb]').forEach(function (b) { b.onclick = function () { S.fb[w.nr] = b.dataset.fb; renderResult(); toast('Bedankt voor je feedback.'); }; });
+}
+function li(t) { return '<li>' + IC.check + '<span>' + esc(t) + '</span></li>'; }
+function tile(c, n, l) { return '<div class="tile ' + c + '"><b>' + n + '</b><span>' + esc(l) + '</span></div>'; }
+function conclusie(v) {
+  var t = v.tel;
+  if (t.asbest + t.controle === 0) return 'Alle werkzaamheden op de werkbon worden in het rapport genoemd en daarin is geen asbest aangetoond. De werkbon gaat ter bevestiging naar de deskundige; dit is geen vrijgave.';
+  return 'Het rapport dekt de werkbon niet volledig af: ' + t.asbest + ' werkzaamhe' + (t.asbest === 1 ? 'id raakt' : 'den raken') + ' asbest en ' + t.controle + ' vragen aanvullende controle. De werkbon kan pas worden vrijgegeven na beoordeling door een deskundige.';
+}
+function advies(v) {
+  var a = [], t = v.tel;
+  if (t.asbest) a.push(['Sanering eerst', 'Laat de asbesthoudende bronnen bij ' + v.regels.filter(function (x) { return x.signaal === 'asbest'; }).map(function (x) { return 'werkzaamheid ' + x.item.code; }).join(', ') + ' verwijderen door een gecertificeerd bedrijf vóór de start.']);
+  if (t.controle) a.push(['Aanvullend onderzoek', 'Vraag aanvullende inventarisatie aan voor ' + v.regels.filter(function (x) { return x.signaal === 'controle'; }).map(function (x) { return x.item.code; }).join(', ') + ': deze werkzaamheden zijn niet (volledig) door het rapport afgedekt.']);
+  if (v.regels.some(function (x) { return x.hits.some(function (h) { return h.bron && h.bron.laag; }); })) a.push(['Achterliggende lagen', 'Let op lagen die je niet direct ziet, zoals de onderlaag onder vloerzeil of de lijmlaag achter tegels.']);
+  if (v.regels.some(function (x) { return x.hits.some(function (h) { return h.bron && h.bron.urgent; }); })) a.push(['Ruimtes afsluiten', 'Het rapport adviseert betrokken ruimtes gesloten te houden tot de sanering.']);
+  a.push(['Planning controleren', 'Houd rekening met de doorlooptijd van sanering en aanvullend onderzoek voordat de werkbon wordt vrijgegeven.']);
+  return a.slice(0, 5);
+}
+function stappen(v) {
+  return [
+    'Controleer of de werkbon precies beschrijft wat er wordt gesloopt, verwijderd of doorgeboord.',
+    'Bekijk per werkzaamheid welke materialen en achterliggende lagen worden geraakt (tabel 1).',
+    'Stuur de vergelijking door naar de deskundige en wacht op diens beoordeling.',
+    'Laat asbesthoudende materialen verwijderen door een gecertificeerd saneringsbedrijf; start pas na de eindcontrole.',
+    'Meld twijfel of onverwachte materialen tijdens het werk direct bij de uitvoerder of deskundige en stop het werk.'
+  ];
+}
+
+/* ---------- chat ---------- */
+var CHIPS = ['Welke geplande werkzaamheden raken asbest?', 'Welke onderdelen zijn uitgesloten of niet onderzocht?', 'Welke achterliggende lagen worden geraakt?', 'Welke informatie ontbreekt in het rapport?', 'Is de badkamer veilig?'];
+function renderChips() { $('#chips').innerHTML = (S.rapport && S.werkbon) ? CHIPS.map(function (c) { return '<button type="button" class="chip" data-q="' + esc(c) + '">' + esc(c) + '</button>'; }).join('') : ''; }
+function userSay(t) { var d = document.createElement('div'); d.className = 'msg-u'; d.innerHTML = '<div class="bub">' + esc(t) + '</div><div class="ua">' + IC.user + '</div>'; $('#chat').appendChild(d); }
+function botSay(html, noNote) {
+  var d = document.createElement('div'); d.className = 'msg-a';
+  d.innerHTML = '<div class="bot">' + IC.bot + '</div><div style="flex:1"><div class="card"><b>KBK AsbestCheck AI</b><div class="ans">' + html + '</div>' + (noNote ? '' : '<div class="note">' + IC.info + '<span><b>Let op:</b> dit antwoord is gebaseerd op de informatie uit het rapport en de opname. Er worden geen extra aannames gedaan. Een deskundige bepaalt de vervolgstap.</span></div>') + '</div><div class="feedback">Was dit antwoord behulpzaam? <button title="Ja">' + IC.up + '</button><button title="Nee">' + IC.down + '</button></div></div>';
+  d.querySelectorAll('.feedback button').forEach(function (b, i) { b.onclick = function () { d.querySelectorAll('.feedback button').forEach(function (x) { x.classList.remove('on'); }); b.classList.add('on'); }; });
+  $('#chat').appendChild(d); return d.querySelector('.ans');
+}
+$('#ask').addEventListener('submit', function (e) { e.preventDefault(); ask(); });
+async function ask() {
+  var q = $('#q').value.trim(); if (!q) return; $('#q').value = '';
+  userSay(q);
+  if (!S.rapport || !S.werkbon) { botSay('<p>Voeg eerst een asbestinventarisatierapport en een werkbon toe (of open een voorbeeld in <b>Mijn rapporten</b>). Daarna kan ik vragen over de vergelijking beantwoorden.</p>', true); return; }
+  var v = S.v || E.vergelijk(S.rapport, S.werkbon);
+  if (aiOn()) {
+    var ans = botSay('<p class="thinking">KBK AsbestCheck AI denkt na…</p>');
+    $('#sendBtn').disabled = true;
+    try {
+      var turns = [{ role: 'user', content: chatContext(v) }, { role: 'assistant', content: 'Begrepen. Ik baseer me alleen op deze gegevens, geef nooit een oordeel dat iets veilig is en verwijs naar een deskundige.' }].concat(S.turns.slice(-6)).concat([{ role: 'user', content: q }]);
+      var res = await S.sample(turns, { cache: false, modelTier: 'default', onText: function (o) { ans.innerHTML = md(o.text); } });
+      ans.innerHTML = md(res.text);
+      S.turns.push({ role: 'user', content: q }, { role: 'assistant', content: res.text });
+    } catch (err) {
+      if (err && err.code === 'not_granted') S.aiMode = 'local';
+      ans.innerHTML = localAnswer(q, v) + '<p class="muted">(Claude was niet beschikbaar; dit antwoord komt van de lokale analyse.)</p>';
+    }
+    $('#sendBtn').disabled = false;
+  } else {
+    var a = botSay('<p class="thinking">KBK AsbestCheck AI denkt na…</p>');
+    await sleep(450); a.innerHTML = localAnswer(q, v);
+  }
+  a = null; window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+function chatContext(v) {
+  var compact = {
+    rapport: { adres: S.rapport.adres, rapportnr: S.rapport.rapportnr, bureau: S.rapport.bureau, datum: S.rapport.rapportdatum, geldigTot: S.rapport.geldigTot, bouwjaar: S.rapport.bouwjaar, reikwijdte: S.rapport.reikwijdte, geschiktheid: S.rapport.geschiktheid, fictief: S.rapport.fictief, bronnen: S.rapport.items, ontbrekend: S.rapport.gaps, geplandInRapport: S.rapport.geplandRapport },
+    werkbon: { nr: S.werkbon.nr, adres: S.werkbon.adres, soort: S.werkbon.soort, start: S.werkbon.startGepland, items: S.werkbon.items },
+    vergelijking: v.regels.map(function (x) { return { code: x.item.code, werk: x.item.werk, ruimte: x.item.ruimte, signaal: E.SIGNAAL[x.signaal].label, toelichting: x.reden }; }),
+    signaleringen: v.signaleringen.map(function (s) { return s.t; })
+  };
+  return 'Je bent KBK AsbestCheck AI, assistent van projectbegeleiders van KBK Bouwgroep (Volendam). Je vergelijkt een asbestinventarisatierapport met de KBK-opname (werkbon).\n' +
+    'REGELS: antwoord in het Nederlands, kort en zakelijk, gebruik een markdown-tabel waar dat helpt. Gebruik ALLEEN de gegevens hieronder (en de rapporttekst als die er is); verzin niets. Zeg NOOIT dat iets veilig is, dat er geen risico is of dat werk zonder maatregelen kan. ' +
+    'Gebruik de termen asbesthoudend, niet-asbesthoudend, uitgesloten/niet onderzocht en onvolledig. Benoem geraakte achterliggende lagen. Geef waarschuwingen waar controle nodig is en verwijs voor de beslissing naar een deskundige (DIA/DAV of asbestdeskundige). Als iemand vraagt of iets veilig is: leg uit dat je dat oordeel niet geeft en noem wat je wel ziet.\n\n' +
+    'GEGEVENS (JSON):\n' + JSON.stringify(compact) + (S.rText ? '\n\nRAPPORTTEKST (uittreksel):\n' + S.rText.slice(0, 40000) : '');
+}
+function tbl(head, rows) { return '<div class="scroll"><table class="stack"><thead><tr>' + head.map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>' + rows.map(function (r) { return '<tr>' + r.map(function (c, i) { return '<td data-l="' + esc(head[i]) + '"><div>' + c + '</div></td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>'; }
+function localAnswer(q, v) {
+  var s = q.toLowerCase(), r = S.rapport;
+  var room = E.roomsIn(s);
+  var regels = room.length ? v.regels.filter(function (x) { return x.item.ruimtes.some(function (z) { return room.indexOf(z) > -1; }); }) : v.regels;
+  if (/veilig|gevaarlijk|mag ik|kan ik (gewoon )?(beginnen|starten)|risico ?loos/.test(s)) {
+    return '<p>Ik geef geen oordeel of iets <b>veilig</b> is. Dat beslist een deskundige. Wel zie ik het volgende' + (room.length ? ' voor ' + esc(room.join(', ')) : '') + ':</p>' +
+      tbl(['Werkzaamheid', 'Rapport', 'Signaal'], (regels.length ? regels : v.regels).map(function (x) { return [esc(x.item.code + ' ' + x.item.werk), esc(x.reden[0] || ''), sigPill(x.signaal)]; })) +
+      '<p>Laat de deskundige deze punten beoordelen voordat het werk start.</p>';
+  }
+  if (/uitgesloten|niet onderzocht|beperking|niet ge(ï|i)nspecteerd|scope/.test(s)) {
+    var u = r.items.filter(function (i) { return i.status === 'uitgesloten' || i.status === 'onvolledig'; });
+    if (!u.length) return '<p>Het rapport bevat geen aparte lijst met uitgesloten onderdelen.' + (r.key === 'meidoorn' ? ' Wel staat erin dat niet-genoemde of niet-onderzochte onderdelen niet als asbestvrij mogen worden beschouwd.' : '') + ' Alles wat op de werkbon staat maar niet in het rapport, krijgt daarom het signaal "Controle noodzakelijk".</p>' +
+      tbl(['Werkzaamheid', 'Niet in rapport'], v.regels.filter(function (x) { return x.signaal === 'controle'; }).map(function (x) { return [esc(x.item.code + ' ' + x.item.werk), esc(x.hits.filter(function (h) { return h.status !== 'asbest' && h.status !== 'geen'; }).map(function (h) { return h.raakt.label; }).join(', '))]; }));
+    return '<p>Deze onderdelen zijn in het rapport uitgesloten of onvolledig onderzocht:</p>' + tbl(['Onderdeel', 'Locatie', 'Reden', 'Raakt werkbon?'], u.map(function (i) {
+      var raakt = v.regels.filter(function (x) { return x.hits.some(function (h) { return h.bron === i || (h.matches && h.matches.indexOf(i) > -1); }); }).map(function (x) { return x.item.code; });
+      return [esc(i.materiaal), esc(i.locatie), esc(i.methode + (i.detail ? '. ' + i.detail : '')), raakt.length ? pill('orange', 'Ja: ' + raakt.join(', ')) : pill('grey', 'Nee')];
+    })) + '<p>Raakt een werkzaamheid een uitgesloten onderdeel, dan is aanvullend onderzoek nodig vóór de start.</p>';
+  }
+  if (/laag|lagen|achterliggend|onderlaag|lijm/.test(s)) {
+    var rows = [];
+    regels.forEach(function (x) { x.hits.forEach(function (h) { if (/lijm|onderlaag|backing|achter|onder|ruimte boven|koof|schacht/i.test(h.raakt.label + ' ' + (h.bron && h.bron.laag || ''))) rows.push([esc(x.item.code + ' ' + x.item.ruimte), esc(h.raakt.label), stPill(h.status), esc(h.bron ? h.bron.id + (h.bron.laag ? ' (' + h.bron.laag + ')' : '') : 'Niet in rapport')]); }); });
+    return '<p>Deze werkzaamheden raken lagen die je niet direct ziet:</p>' + (rows.length ? tbl(['Werkzaamheid', 'Achterliggende laag', 'Status rapport', 'Bron'], rows) : '<p>Geen achterliggende lagen herkend op de werkbon.</p>') + '<p>Een laag die niet in het rapport staat, is daarmee niet onderzocht. Laat dit controleren.</p>';
+  }
+  if (/ontbre|mist|volledig|tegenstrijd|klopt|fout/.test(s)) {
+    return '<p>Bij het controleren van het rapport vallen deze punten op:</p><ul>' + v.signaleringen.map(function (x) { return '<li>' + esc(x.t) + '</li>'; }).join('') + '</ul><p>Laat de deskundige deze punten nagaan bij het inventarisatiebureau.</p>';
+  }
+  if (/advies|wat moet|stappen|doen|vervolg/.test(s)) {
+    return '<p>Advies op basis van rapport en opname:</p><ol>' + advies(v).map(function (a) { return '<li><b>' + esc(a[0]) + ':</b> ' + esc(a[1]) + '</li>'; }).join('') + '</ol>';
+  }
+  if (/asbesthoudend|asbestbron|bronnen|asbest/.test(s) && !/werkzaamhe|gepland/.test(s)) {
+    var a = r.items.filter(function (i) { return i.status === 'asbest'; });
+    return '<p>Het rapport noemt ' + a.length + ' asbesthoudende bron' + (a.length === 1 ? '' : 'nen') + ':</p>' + tbl(['Bron', 'Materiaal', 'Locatie', 'Asbestsoort', 'Hoeveelheid', 'Risicoklasse'], a.map(function (i) { return [esc(i.id), esc(i.materiaal), esc(i.locatie), esc(i.soort), esc(i.hoeveelheid), esc(i.rk)]; }));
+  }
+  // standaard: geplande werkzaamheden en relevante bronnen (zoals scherm 1)
+  return '<p>' + (room.length ? 'Voor ' + esc(room.join(', ')) + ' staan' : 'Op de werkbon staan') + ' de volgende geplande werkzaamheden, met de bijbehorende asbestbronnen uit het rapport:</p>' +
+    tbl(['Werkzaamheid', 'Locatie', 'Geplande periode', 'Relevante asbestbronnen', 'Signaal'], regels.map(function (x) {
+      var b = x.hits.filter(function (h) { return h.bron; }).map(function (h) { return esc(h.bron.id + ': ' + h.bron.materiaal) + ' <small>(' + esc(E.STATUS[h.status].label.toLowerCase()) + ')</small>'; });
+      return [esc(x.item.werk), esc(x.item.ruimte), esc(x.item.planning || '-'), b.length ? b.join('<br>') : '<i>Niet in rapport</i>', sigPill(x.signaal)];
+    })) +
+    '<h4>Toelichting:</h4><ul>' + regels.filter(function (x) { return x.signaal === 'asbest' || x.signaal === 'controle'; }).slice(0, 4).map(function (x) { return '<li>' + esc(x.item.ruimte + ': ' + x.reden[0]) + '</li>'; }).join('') + '</ul>';
+}
+function md(t) {
+  var lines = esc(t).split('\n'), out = '', inList = null, tableRows = [];
+  function inline(s) { return s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<i>$1</i>').replace(/`(.+?)`/g, '<code>$1</code>'); }
+  function flushT() { if (!tableRows.length) return; var rows = tableRows.filter(function (r) { return !/^\|?\s*:?-{2,}/.test(r); }).map(function (r) { return r.replace(/^\||\|$/g, '').split('|').map(function (c) { return inline(c.trim()); }); }); out += '<div class="scroll"><table><thead><tr>' + rows[0].map(function (c) { return '<th>' + c + '</th>'; }).join('') + '</tr></thead><tbody>' + rows.slice(1).map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>'; tableRows = []; }
+  function flushL() { if (inList) { out += '</' + inList + '>'; inList = null; } }
+  lines.forEach(function (l) {
+    if (/^\s*\|/.test(l)) { flushL(); tableRows.push(l.trim()); return; } flushT();
+    var m;
+    if ((m = /^#{1,4}\s+(.*)/.exec(l))) { flushL(); out += '<h4>' + inline(m[1]) + '</h4>'; }
+    else if ((m = /^\s*[-*•]\s+(.*)/.exec(l))) { if (inList !== 'ul') { flushL(); out += '<ul>'; inList = 'ul'; } out += '<li>' + inline(m[1]) + '</li>'; }
+    else if ((m = /^\s*\d+[.)]\s+(.*)/.exec(l))) { if (inList !== 'ol') { flushL(); out += '<ol>'; inList = 'ol'; } out += '<li>' + inline(m[1]) + '</li>'; }
+    else if (l.trim()) { flushL(); out += '<p>' + inline(l) + '</p>'; }
+    else flushL();
+  });
+  flushT(); flushL(); return out;
+}
+
+/* ---------- opname (werkbon-editor) ---------- */
+var MATS = [['vloerzeil', 'vloer', 'Vloerzeil/vinyl + onderlaag'], ['tegellijm', 'wand', 'Tegellijm achter wandtegels'], ['tegellijm', 'vloer', 'Tegellijm onder vloertegels'], ['plafond', 'plafond', 'Plafond / ruimte erboven'], ['koof', null, 'Leidingkoof / schacht'], ['ventilatie', 'wand', 'Ventilatiekanaal'], ['kit', 'kozijn', 'Kit rond kozijnen'], ['beglazingskit', 'kozijn', 'Beglazingskit / stopverf'], ['vensterbank', 'kozijn', 'Vensterbank'], ['kozijn', 'kozijn', 'Kozijnaansluiting'], ['plaat', 'wand', 'Plaat / beplating'], ['leidingisolatie', null, 'Leidingisolatie'], ['dakplaten', 'dak', 'Dak- of golfplaten'], ['keukenblok', null, 'Keukenblok'], ['radiator', null, 'Radiatoren/pakkingen'], ['spouw', 'wand', 'Spouw'], ['kruipruimte', 'vloer', 'Kruipruimte'], ['wand', 'wand', 'Binnenwand (bouwkundig)'], ['verf', 'wand', 'Alleen schilderwerk']];
+var ROOMS = E.VOCAB_R.filter(function (r) { return r !== '*'; });
+var OP = null;
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function newOpname() {
+  return { key: 'eigen', nr: 'KBK-WB-2026-' + (200 + Math.floor(Math.random() * 700)), soort: 'Mutatie', object: 'Woning', adres: '', postcode: '', opdrachtgever: '', projectbegeleider: 'R. Veerman', opnamedatum: vandaag(), startGepland: '', bouwjaar: null, bewoond: 'Leeg (mutatie)', items: [{ code: '01', ruimte: 'Badkamer', ruimtes: ['badkamer'], werk: '', raakt: [], destructief: true, planning: '' }], opmerkingen: '' };
+}
+function renderOpname() {
+  if (!OP) { var open0 = P.dossiers.filter(function (d) { return d.stap === 0; })[0]; OP = JSON.parse(JSON.stringify(open0 ? open0.werkbon : (S.werkbon || D.WERKBONNEN[0]))); }
+  var el = $('#view-opname');
+  var h = '<div class="actions" style="margin:0 0 12px"><label class="muted" style="display:flex;gap:8px;align-items:center">Werkbon <select id="opPick" class="btn sm">' + P.dossiers.map(function (d) { return d.werkbon; }).map(function (w) { return '<option value="' + esc(w.nr) + '"' + (OP.nr === w.nr ? ' selected' : '') + '>' + esc(w.nr + ' – ' + w.adres.split(',')[0]) + '</option>'; }).join('') + '</select></label><button class="btn sm" id="opNew">Nieuwe lege opname</button></div>';
+  h += '<div class="card"><div class="form">' +
+    fld('nr', 'Werkbonnummer') + fld('adres', 'Adres (straat, postcode, plaats)') + fld('postcode', 'Postcode') + fld('soort', 'Soort werk') + fld('projectbegeleider', 'Projectbegeleider') + fld('opnamedatum', 'Opnamedatum') + fld('startGepland', 'Start gepland (jjjj-mm-dd)') + fld('bouwjaar', 'Bouwjaar') + '</div></div>';
+  h += '<div class="card sec"><h2>Werkzaamheden <small>per ruimte, met de materialen en lagen die geraakt worden</small></h2><div class="scroll"><table class="op stack"><thead><tr><th>#</th><th>Ruimte</th><th>Werkzaamheid</th><th>Raakt materialen / lagen</th><th>Destructief</th><th></th></tr></thead><tbody>' +
+    OP.items.map(function (it, i) {
+      return '<tr><td data-l="#"><div>' + esc(it.code) + '</div></td><td data-l="Ruimte"><div><select data-i="' + i + '" data-f="ruimte">' + ROOMS.map(function (r) { return '<option value="' + r + '"' + (it.ruimtes[0] === r ? ' selected' : '') + '>' + cap(r) + '</option>'; }).join('') + '</select>' + (it.ruimtes.length > 1 ? '<small class="muted"> + ' + esc(it.ruimtes.slice(1).join(', ')) + '</small>' : '') + '</div></td>' +
+        '<td data-l="Werkzaamheid" style="min-width:220px"><textarea data-i="' + i + '" data-f="werk">' + esc(it.werk) + '</textarea></td>' +
+        '<td data-l="Raakt" style="min-width:300px"><div class="mats">' + MATS.map(function (m, k) { var on = it.raakt.some(function (t) { return t.canon === m[0] && (t.pos || null) === m[1]; }) || (m[0] === 'tegellijm' && it.raakt.some(function (t) { return t.canon === 'tegellijm' && !t.pos; })); return '<label class="' + (on ? 'on' : '') + '"><input type="checkbox" data-i="' + i + '" data-m="' + k + '"' + (on ? ' checked' : '') + '>' + esc(m[2]) + '</label>'; }).join('') + '</div></td>' +
+        '<td data-l="Destructief"><div><input type="checkbox" data-i="' + i + '" data-f="destructief"' + (it.destructief ? ' checked' : '') + '></div></td><td><button class="x" data-del="' + i + '" title="Regel verwijderen">×</button></td></tr>';
+    }).join('') + '</tbody></table></div><div class="actions"><button class="btn" id="opAdd">+ Werkzaamheid toevoegen</button><button class="btn pri" id="opShare">Deel met kantoor</button></div></div>';
+  h += '<p class="muted" style="margin:12px 2px 24px">Tip: de projectbegeleider vult dit op locatie in (tablet of telefoon). Bij "Deel met kantoor" komt de werkbon in het dossieroverzicht bij de werkvoorbereiding.</p>';
+  el.innerHTML = h;
+  el.querySelectorAll('[data-k]').forEach(function (inp) { inp.oninput = function () { OP[inp.dataset.k] = inp.dataset.k === 'bouwjaar' ? (+inp.value || null) : inp.value; if (inp.dataset.k === 'postcode') OP.postcode = inp.value.replace(/\s/g, '').toUpperCase(); }; });
+  el.querySelectorAll('[data-f]').forEach(function (inp) {
+    inp.onchange = inp.oninput = function () {
+      var it = OP.items[+inp.dataset.i];
+      if (inp.dataset.f === 'ruimte') { it.ruimtes = [inp.value]; it.ruimte = cap(inp.value); }
+      else if (inp.dataset.f === 'destructief') it.destructief = inp.checked; else it.werk = inp.value;
+    };
+  });
+  el.querySelectorAll('[data-m]').forEach(function (cb) {
+    cb.onchange = function () {
+      var it = OP.items[+cb.dataset.i], m = MATS[+cb.dataset.m];
+      it.raakt = it.raakt.filter(function (t) { return !(t.canon === m[0] && ((t.pos || null) === m[1] || !t.pos)); });
+      if (cb.checked) it.raakt.push({ canon: m[0], label: m[2], pos: m[1] });
+      cb.parentNode.classList.toggle('on', cb.checked);
+    };
+  });
+  el.querySelectorAll('[data-del]').forEach(function (b) { b.onclick = function () { OP.items.splice(+b.dataset.del, 1); renum(); renderOpname(); }; });
+  $('#opAdd').onclick = function () { OP.items.push({ code: '', ruimte: 'Keuken', ruimtes: ['keuken'], werk: '', raakt: [], destructief: true, planning: '' }); renum(); renderOpname(); };
+  $('#opNew').onclick = function () { OP = newOpname(); renderOpname(); };
+  $('#opPick').onchange = function () { OP = JSON.parse(JSON.stringify(dos($('#opPick').value).werkbon)); renderOpname(); };
+  $('#opShare').onclick = function () {
+    var w = JSON.parse(JSON.stringify(OP));
+    w.items = w.items.filter(function (i) { return i.werk.trim(); });
+    if (!w.items.length) { toast('Vul minstens één werkzaamheid in.'); return; }
+    if (!w.adres.trim()) { toast('Vul het adres in.'); return; }
+    w.items.forEach(function (i) { if (!i.raakt.length) i.raakt = [{ canon: 'overig', label: 'Niet opgegeven', pos: null }]; i.ruimte = i.ruimte || cap(i.ruimtes[0]); });
+    if (!w.postcode) { var pc = /(\d{4})\s?([A-Z]{2})/i.exec(w.adres); if (pc) w.postcode = (pc[1] + pc[2]).toUpperCase(); }
+    var d = dos(w.nr);
+    if (!d) { d = { nr: w.nr, werkbon: w, stap: 0, rapportKey: null, rapport: null, besluit: null, opmerking: '', log: [{ t: nu(), wie: ROLES[USER || 'pb'].wie, wat: 'Opname gemaakt op locatie' }] }; P.dossiers.unshift(d); }
+    d.werkbon = w;
+    if (d.stap === 0) { d.stap = 1; logD(d, 'Werkbon gedeeld met kantoor'); toast('Werkbon ' + w.nr + ' gedeeld met kantoor.'); }
+    else { logD(d, 'Werkbon bijgewerkt'); toast('Werkbon bijgewerkt.'); }
+    saveP(); show('dossiers');
+  };
+}
+function renum() { OP.items.forEach(function (it, i) { it.code = ('0' + (i + 1)).slice(-2); }); }
+function fld(k, l) { return '<label>' + esc(l) + '<input data-k="' + k + '" value="' + esc(OP[k] == null ? '' : OP[k]) + '"></label>'; }
+
+/* ---------- inloggen, rollen en dossiers (procesflow) ---------- */
+var ROLES = {
+  pb: { naam: 'Projectbegeleider', email: 'raphael@example.com', wie: 'R. Veerman (projectbegeleider)', taak: 'Opname maken op locatie en delen met kantoor' },
+  kantoor: { naam: 'Werkvoorbereiding (kantoor)', email: 'kantoor@example.com', wie: 'Werkvoorbereiding KBK', taak: 'Inventarisatie aanvragen, rapport koppelen en AI-vergelijking starten' },
+  desk: { naam: 'Asbestdeskundige', email: 'deskundige@example.com', wie: 'Asbestdeskundige', taak: 'Signalen beoordelen en besluiten' }
+};
+var DEMO_PW = 'kbk2026';
+var STAPPEN = ['Opname', 'Gedeeld', 'Aangevraagd', 'Rapport ontvangen', 'Gekoppeld', 'AI-vergelijking', 'Bij deskundige', 'Besluit'];
+var AAN_ZET = ['pb', 'kantoor', 'kantoor', 'kantoor', 'kantoor', 'kantoor', 'desk', null];
+var BESLUIT = { akkoord: ['green', 'Akkoord: werkbon vrijgegeven'], sanering: ['red', 'Eerst sanering, daarna uitvoering'], aanvullend: ['orange', 'Aanvullend onderzoek nodig'] };
+var USER = null, P = null;
+function nu() { var d = new Date(); return E.fmt(d) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+function bureauVan(key) { return { meidoorn: 'Noord-Holland Inspecties (fictief)', teststraat: 'J. Voorbeeld (fictief)', valerius: 'Van Santen Advies', smalthof: 'SGI Compliance Consultancy', struisgras: 'SSBA B.V.' }[key] || 'Inventarisatiebureau'; }
+function seed() {
+  var stap = { meidoorn: 0, teststraat: 3, valerius: 6, smalthof: 7, struisgras: 7 };
+  var p = { dossiers: [], mails: [] };
+  D.WERKBONNEN.forEach(function (w) {
+    var s = stap[w.key], log = [{ t: w.opnamedatum, wie: w.projectbegeleider + ' (projectbegeleider)', wat: 'Opname gemaakt op locatie' }];
+    if (s >= 1) log.push({ t: w.opnamedatum, wie: w.projectbegeleider + ' (projectbegeleider)', wat: 'Werkbon gedeeld met kantoor' });
+    if (s >= 2) log.push({ t: w.opnamedatum, wie: 'Werkvoorbereiding KBK', wat: 'Asbestinventarisatie aangevraagd bij ' + bureauVan(w.key) });
+    var r = D.RAPPORTEN.filter(function (x) { return x.key === w.key; })[0];
+    if (s >= 3) { log.push({ t: r.rapportdatum, wie: 'Outlook', wat: 'Rapport ontvangen: ' + r.bestand }); p.mails.push({ id: 'm-' + w.key, van: bureauVan(w.key), tijd: r.rapportdatum, bestand: r.bestand, adres: r.adres, rapportKey: r.key, nr: s >= 4 ? w.nr : null }); }
+    if (s >= 4) log.push({ t: r.rapportdatum, wie: 'Koppeltool', wat: 'Automatisch gekoppeld op postcode ' + r.postcode });
+    if (s >= 5) log.push({ t: r.rapportdatum, wie: 'KBK AsbestCheck AI', wat: 'Vergelijking rapport en werkbon gemaakt' });
+    if (s >= 6) log.push({ t: r.rapportdatum, wie: 'Werkvoorbereiding KBK', wat: 'Doorgestuurd naar de deskundige' });
+    var d = { nr: w.nr, werkbon: w, stap: s, rapportKey: s >= 4 ? r.key : null, rapport: null, besluit: null, opmerking: '', log: log };
+    if (w.key === 'smalthof') { d.besluit = 'sanering'; d.opmerking = 'Lijmlagen achter de tegels en vensterbanken eerst laten saneren (RK1/RK2). Doorbraak woonkamer: aanvullend onderzoek, rapport is daar niet geschikt voor bouwkundige ingrepen.'; log.push({ t: '29-01-2026', wie: 'Asbestdeskundige', wat: 'Besluit: eerst sanering' }); }
+    if (w.key === 'struisgras') { d.besluit = 'aanvullend'; d.opmerking = 'Aanvullend destructief onderzoek: wandtegels keuken, tegelwerk badkamer, beplating onder deuren en kruipruimte. Monsternummer B3528 laten verklaren door het bureau.'; log.push({ t: '14-02-2025', wie: 'Asbestdeskundige', wat: 'Besluit: aanvullend onderzoek nodig' }); }
+    p.dossiers.push(d);
+  });
+  return p;
+}
+function saveP() { try { localStorage.setItem('kbk-proces', JSON.stringify(P)); } catch (e) {} }
+function loadP() { try { P = JSON.parse(localStorage.getItem('kbk-proces')); } catch (e) { P = null; } if (!P || !P.dossiers) { P = seed(); saveP(); } }
+function dos(nr) { return P.dossiers.filter(function (d) { return d.nr === nr; })[0]; }
+function logD(d, wat) { d.log.push({ t: nu(), wie: USER ? ROLES[USER].wie : '-', wat: wat }); }
+function rapportVan(d) { if (d.rapport) return d.rapport; var r = D.RAPPORTEN.filter(function (x) { return x.key === d.rapportKey; })[0]; if (!r) return null; r = JSON.parse(JSON.stringify(r)); r.methode = 'bekend'; return r; }
+function mijnBeurt(d) { return USER && AAN_ZET[d.stap] === USER; }
+
+function stepper(d) {
+  return '<div class="stepper">' + STAPPEN.map(function (s, i) { var c = i < d.stap ? 'done' : i === d.stap ? (d.stap === 7 ? 'done' : 'now') : ''; return '<span class="st ' + c + '"><i>' + (i < d.stap || (i === 7 && d.stap === 7) ? '✓' : i + 1) + '</i>' + esc(s) + '</span>'; }).join('') + '</div>';
+}
+function actiesVoor(d) {
+  var a = [];
+  if (USER === 'pb' && d.stap === 0) a.push('<button class="btn pri sm" data-act="open-opname" data-nr="' + esc(d.nr) + '">Opname afronden en delen</button>');
+  if (USER === 'kantoor' && d.stap === 1) a.push('<button class="btn pri sm" data-act="aanvragen" data-nr="' + esc(d.nr) + '">Inventarisatie aanvragen</button>');
+  if (USER === 'kantoor' && d.stap === 2) a.push('<button class="btn pri sm" data-act="ontvang" data-nr="' + esc(d.nr) + '">Simuleer: rapport komt binnen in Outlook</button>');
+  if (USER === 'kantoor' && d.stap === 3) a.push('<button class="btn pri sm" data-act="go-inbox">Naar inbox: koppeltool uitvoeren</button>');
+  if (USER === 'kantoor' && d.stap === 4) a.push('<button class="btn pri sm" data-act="vergelijk" data-nr="' + esc(d.nr) + '">Start AI-vergelijking</button>');
+  if (d.stap >= 5) a.push('<button class="btn ' + (mijnBeurt(d) ? 'pri ' : '') + 'sm" data-act="vergelijk" data-nr="' + esc(d.nr) + '">' + (USER === 'desk' && d.stap === 6 ? 'Beoordelen' : 'Bekijk vergelijking') + '</button>');
+  return a.join('');
+}
+function renderDossiers() {
+  var el = $('#view-dossiers'); if (!el) return;
+  var mine = P.dossiers.filter(mijnBeurt).length;
+  var h = '<div class="summary">' + IC.scales + '<div><b>Ingelogd als ' + esc(ROLES[USER].naam) + '.</b> ' + esc(ROLES[USER].taak) + '. ' + (mine ? 'Er ' + (mine === 1 ? 'staat 1 dossier' : 'staan ' + mine + ' dossiers') + ' op jou te wachten.' : 'Er wacht nu niets op jou.') + '</div></div>';
+  h += P.dossiers.map(function (d) {
+    var w = d.werkbon, b = d.besluit ? BESLUIT[d.besluit] : null, wacht = AAN_ZET[d.stap];
+    return '<div class="card dossier' + (mijnBeurt(d) ? ' mine' : '') + '"><div class="dhead"><div><b>' + esc(w.adres) + '</b><small>' + esc(w.nr) + ' • ' + esc(w.soort) + ' • projectbegeleider ' + esc(w.projectbegeleider) + '</small></div><div class="row">' +
+      (b ? pill(b[0], b[1]) : pill(mijnBeurt(d) ? 'blue' : 'grey', mijnBeurt(d) ? 'Jij bent aan zet' : 'Wacht op ' + ROLES[wacht].naam.toLowerCase())) + '</div></div>' + stepper(d) +
+      (d.opmerking ? '<p class="dnote"><b>Deskundige:</b> ' + esc(d.opmerking) + '</p>' : '') +
+      '<div class="actions" style="margin-top:8px">' + actiesVoor(d) + '</div><details><summary>Logboek (' + d.log.length + ')</summary><ul class="log">' + d.log.map(function (l) { return '<li><span>' + esc(l.t) + '</span> <b>' + esc(l.wie) + '</b>: ' + esc(l.wat) + '</li>'; }).join('') + '</ul></details></div>';
+  }).join('');
+  h += '<p class="muted" style="margin:14px 2px 24px">Tip voor de presentatie: begin als projectbegeleider bij Meidoornstraat 24, log daarna in als kantoor en tot slot als deskundige. Wissel van rol via je naam rechtsboven. De voortgang blijft bewaard in deze browser; terugzetten kan bij Instellingen.</p>';
+  el.innerHTML = h;
+}
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-act]'); if (!b) return;
+  var d = b.dataset.nr ? dos(b.dataset.nr) : null, act = b.dataset.act;
+  if (act === 'open-opname') { OP = JSON.parse(JSON.stringify(d.werkbon)); show('opname'); return; }
+  if (act === 'aanvragen') { d.stap = 2; logD(d, 'Asbestinventarisatie aangevraagd'); saveP(); renderDossiers(); toast('Aanvraag verstuurd naar het inventarisatiebureau.'); return; }
+  if (act === 'ontvang') {
+    var r = D.RAPPORTEN.filter(function (x) { return x.postcode === d.werkbon.postcode; })[0];
+    if (!r) { toast('Geen voorbeeldrapport voor dit adres. Sleep de PDF in de inbox.'); show('rapporten'); return; }
+    P.mails.unshift({ id: 'm-' + Date.now(), van: bureauVan(r.key), tijd: nu(), bestand: r.bestand, adres: r.adres, rapportKey: r.key, nr: null });
+    d.stap = 3; d.log.push({ t: nu(), wie: 'Outlook', wat: 'Rapport ontvangen: ' + r.bestand }); saveP(); show('rapporten'); toast('Nieuwe mail met rapport in de inbox.'); return;
+  }
+  if (act === 'go-inbox') { show('rapporten'); return; }
+  if (act === 'koppel') { koppelMail(b.dataset.id, b.dataset.to || null); return; }
+  if (act === 'vergelijk') { openDossier(d.nr); return; }
+  if (act === 'besluit') {
+    var dd = dos(b.dataset.nr); dd.besluit = b.dataset.b; dd.opmerking = ($('#deskNote') || {}).value || ''; dd.stap = 7;
+    logD(dd, 'Besluit: ' + BESLUIT[dd.besluit][1].toLowerCase()); saveP(); renderResult(); toast('Besluit vastgelegd. De projectbegeleider ziet dit in het dossier.'); return;
+  }
+  if (act === 'naar-desk') { var d2 = dos(b.dataset.nr); d2.stap = 6; logD(d2, 'Doorgestuurd naar de deskundige'); saveP(); renderResult(); toast('Doorgestuurd naar de deskundige.'); return; }
+});
+function koppelMail(id, handmatig) {
+  var m = P.mails.filter(function (x) { return x.id === id; })[0]; if (!m) return;
+  var r = m.rapport || D.RAPPORTEN.filter(function (x) { return x.key === m.rapportKey; })[0];
+  var d = handmatig ? dos(handmatig) : P.dossiers.filter(function (x) { return x.stap >= 1 && x.stap <= 4 && ((r.postcode && x.werkbon.postcode === r.postcode) || straat(x.werkbon.adres) === straat(r.adres)); })[0];
+  if (!d) { m.geenMatch = true; saveP(); renderRapporten(); toast('Koppeltool vond geen werkbon. Koppel handmatig.'); return; }
+  m.nr = d.nr; m.geenMatch = false; d.rapportKey = m.rapportKey || null; d.rapport = m.rapport || null; if (d.stap < 4) d.stap = 4;
+  d.log.push({ t: nu(), wie: handmatig ? ROLES[USER].wie : 'Koppeltool', wat: handmatig ? 'Handmatig gekoppeld aan rapport ' + m.bestand : 'Automatisch gekoppeld op ' + (r.postcode ? 'postcode ' + r.postcode : 'adres') });
+  saveP(); renderRapporten(); toast('Rapport gekoppeld aan ' + d.nr + '.');
+}
+function openDossier(nr) {
+  var d = dos(nr), r = rapportVan(d);
+  S.dossier = nr; S.rapport = r; S.werkbon = d.werkbon; S.rText = ''; S.turns = [];
+  S.rFile = { name: r.bestand, meta: 'Ontvangen via Outlook' + (r.paginas ? ' • ' + r.paginas + " pagina's" : '') };
+  S.wFile = { name: d.werkbon.nr + '_opname.pdf', meta: 'Opname ' + d.werkbon.opnamedatum + ' • ' + d.werkbon.projectbegeleider };
+  if (d.stap === 4 && USER === 'kantoor') { d.stap = 5; d.log.push({ t: nu(), wie: 'KBK AsbestCheck AI', wat: 'Vergelijking rapport en werkbon gemaakt' }); saveP(); }
+  var k = $('#koppel'); k.innerHTML = '<span class="dot"></span>Dossier ' + esc(nr) + ': rapport gekoppeld aan de werkbon op adres ' + esc(d.werkbon.adres) + '.'; k.classList.remove('hidden');
+  $('#chat').innerHTML = ''; renderAll(); show('analyse');
+}
+function dossierPanel(w) {
+  var d = S.dossier && dos(S.dossier);
+  if (!d || d.werkbon.nr !== w.nr) return null;
+  var h = '<div class="card sec dpanel"><h2>Dossier ' + esc(d.nr) + ' <small>' + esc(STAPPEN[d.stap]) + '</small></h2>' + stepper(d);
+  if (d.stap === 5 && USER !== 'desk') h += '<div class="actions"><button class="btn pri" data-act="naar-desk" data-nr="' + esc(d.nr) + '">Doorsturen naar deskundige</button><button class="btn" data-q="Welke informatie ontbreekt in het rapport?">Wat ontbreekt er?</button></div>';
+  else if (d.stap === 6 && USER === 'desk') h += '<p style="margin:10px 0 6px"><b>Jouw beoordeling</b> (AI heeft gesignaleerd, jij beslist):</p><textarea id="deskNote" class="deskNote" placeholder="Toelichting voor de projectbegeleider, bijv. welke bronnen eerst gesaneerd worden of welk aanvullend onderzoek nodig is"></textarea><div class="actions"><button class="btn" data-act="besluit" data-b="aanvullend" data-nr="' + esc(d.nr) + '">Aanvullend onderzoek nodig</button><button class="btn" data-act="besluit" data-b="sanering" data-nr="' + esc(d.nr) + '">Eerst sanering</button><button class="btn pri" data-act="besluit" data-b="akkoord" data-nr="' + esc(d.nr) + '">Akkoord, werkbon vrijgeven</button></div>';
+  else if (d.stap === 6) h += '<p class="status">' + IC.check + ' Ligt ter beoordeling bij de deskundige.</p>';
+  else if (d.stap === 7) h += '<p style="margin:10px 0 0">' + pill(BESLUIT[d.besluit][0], BESLUIT[d.besluit][1]) + (d.opmerking ? ' <span>' + esc(d.opmerking) + '</span>' : '') + '</p>';
+  return h + '</div>';
+}
+
+/* ---------- inbox (Outlook) ---------- */
+function renderRapporten() {
+  var el = $('#view-rapporten');
+  var h = '<div class="card" style="margin-bottom:14px"><div style="padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>Inbox asbestrapporten (Outlook)</b><span class="muted">De koppeltool leest de PDF-bijlage en zoekt de werkbon op adres en postcode</span></div>' +
+    P.mails.map(function (m) {
+      var st;
+      if (m.nr) st = IC.check + ' <small>Gekoppeld aan <b>' + esc(m.nr) + '</b></small>';
+      else if (m.geenMatch) st = '<small style="color:var(--orange)"><b>Geen werkbon gevonden.</b> Handmatig koppelen:</small> <select class="btn sm" data-man="' + esc(m.id) + '"><option value="">Kies werkbon…</option>' + P.dossiers.filter(function (d) { return d.stap >= 1 && d.stap <= 3; }).map(function (d) { return '<option value="' + esc(d.nr) + '">' + esc(d.nr + ' – ' + d.werkbon.adres.split(',')[0]) + '</option>'; }).join('') + '</select>';
+      else st = '<small style="color:var(--orange)">Nog niet gekoppeld</small>';
+      var btn = m.nr ? '<button class="btn sm" data-act="vergelijk" data-nr="' + esc(m.nr) + '">Open dossier</button>' : (USER === 'kantoor' ? '<button class="btn pri sm" data-act="koppel" data-id="' + esc(m.id) + '">Koppeltool uitvoeren</button>' : '');
+      return '<div class="mail"><span class="ic">PDF</span><div><b>Asbestinventarisatie ' + esc(m.adres) + '</b><small>Van: ' + esc(m.van) + ' • ' + esc(m.tijd) + ' • bijlage ' + esc(m.bestand) + '</small><br>' + st + '</div>' + btn + '</div>';
+    }).join('') +
+    (USER === 'kantoor' ? '<label class="mail drop" style="cursor:pointer;display:flex;justify-content:center;border:2px dashed #b9c6dd;margin:10px;border-radius:12px"><input type="file" id="inboxFile" accept="application/pdf" hidden><span><b>+ Binnengekomen rapport toevoegen</b><br><small>Sleep of kies een PDF uit Outlook; de koppeltool zoekt de werkbon erbij</small></span></label><p id="inboxBusy" class="muted" style="margin:0 16px 12px"></p>' : '') + '</div>';
+  h += '<p class="muted" style="margin:6px 2px 24px">Losse vergelijking zonder dossier? Gebruik Nieuwe analyse en sleep het rapport in het linkervak.</p>';
+  el.innerHTML = h;
+  el.querySelectorAll('[data-man]').forEach(function (s) { s.onchange = function () { if (s.value) koppelMail(s.dataset.man, s.value); }; });
+  var f = $('#inboxFile'); if (f) f.onchange = async function () {
+    var file = f.files[0]; if (!file) return; $('#inboxBusy').textContent = 'PDF lezen en bronnen herkennen…';
+    try {
+      var res = await pdfText(file), r = E.herken(res.text, D.RAPPORTEN), m = { id: 'm-' + Date.now(), van: 'Inventarisatiebureau', tijd: nu(), bestand: file.name, nr: null };
+      if (r) { m.rapportKey = r.key; m.adres = r.adres; m.van = bureauVan(r.key); }
+      else {
+        var rr = null;
+        if (aiOn()) { $('#inboxBusy').textContent = 'Claude analyseert het rapport…'; try { rr = E.normalizeAI(await S.sample.json(E.aiExtractPrompt(res.text), { modelTier: 'default' }), file.name); rr.methode = 'claude'; } catch (er) { rr = null; } }
+        if (!rr) rr = E.heuristiek(res.text, file.name);
+        rr.paginas = res.pages; m.rapport = rr; m.adres = rr.adres;
+      }
+      P.mails.unshift(m); saveP(); koppelMail(m.id, null);
+    } catch (err) { $('#inboxBusy').textContent = 'Kon de PDF niet lezen: ' + err.message; }
+  };
+}
+
+/* ---------- login ---------- */
+function renderLogin() {
+  var l = $('#login');
+  l.innerHTML = '<div class="lg-l"><div class="logo">' + document.querySelector('.side .logo').innerHTML + '</div><h2>Asbestrapporten sneller en zorgvuldiger controleren</h2><p>Van opname op locatie tot besluit van de deskundige, in één dossier.</p></div>' +
+    '<form class="lg-r" id="lgForm"><h1>Inloggen</h1><label>E-mailadres<input id="lgMail" type="email" autocomplete="username" required></label><label>Wachtwoord<input id="lgPw" type="password" autocomplete="current-password" required></label><p id="lgErr" class="lg-err"></p><button class="btn pri" type="submit">Inloggen</button>' +
+    '<div class="lg-demo"><b>Demo-accounts</b> (wachtwoord <code>' + DEMO_PW + '</code>)' + Object.keys(ROLES).map(function (k) { return '<button type="button" class="chip" data-role="' + k + '">' + esc(ROLES[k].naam) + '<br><small>' + esc(ROLES[k].email) + '</small></button>'; }).join('') + '</div><p class="muted" style="font-size:12.5px">Demo-inlog voor de schoolopdracht: zonder server, dus niet bedoeld als echte beveiliging.</p></form>';
+  l.hidden = false;
+  l.querySelectorAll('[data-role]').forEach(function (b) { b.onclick = function () { $('#lgMail').value = ROLES[b.dataset.role].email; $('#lgPw').value = DEMO_PW; $('#lgPw').focus(); }; });
+  $('#lgForm').onsubmit = function (e) {
+    e.preventDefault();
+    var mail = $('#lgMail').value.trim().toLowerCase(), k = Object.keys(ROLES).filter(function (x) { return ROLES[x].email === mail; })[0];
+    if (!k || $('#lgPw').value !== DEMO_PW) { $('#lgErr').textContent = 'Onbekend e-mailadres of verkeerd wachtwoord.'; return; }
+    login(k);
+  };
+}
+function login(k) {
+  USER = k; try { sessionStorage.setItem('kbk-user', k); } catch (e) {}
+  $('#login').hidden = true; $('.mail-t').textContent = ROLES[k].email; $('#roleT').textContent = ROLES[k].naam;
+  show('dossiers');
+}
+function logout() { USER = null; try { sessionStorage.removeItem('kbk-user'); } catch (e) {} renderLogin(); }
+$('#userBtn').onclick = function () { $('#userMenu').hidden = !$('#userMenu').hidden; };
+$('#logoutBtn').onclick = function () { $('#userMenu').hidden = true; logout(); };
+
+/* ---------- werkproces (flowchart) ---------- */
+function renderProces() {
+  var el = $('#view-proces');
+  if (el.dataset.done) return; el.dataset.done = 1;
+  var lanes = [['Locatie', 'Projectbegeleider', '#e8f0fe'], ['Kantoor KBK', 'Werkvoorbereiding', '#eef2f7'], ['Outlook + koppeltool', 'Automatisch', '#fff4d6'], ['KBK AsbestCheck AI', 'AI-vergelijking', '#e9f9ef'], ['Deskundige', 'DIA / asbestdeskundige', '#fde4e4']];
+  var LW = 150, LH = 112, W = 1240, H = lanes.length * LH + 20;
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Flowchart van opname tot beoordeling door de deskundige"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#334155"/></marker></defs>';
+  lanes.forEach(function (l, i) { var y = 10 + i * LH; s += '<rect x="0" y="' + y + '" width="' + W + '" height="' + (LH - 6) + '" rx="10" fill="' + l[2] + '"/><text x="16" y="' + (y + 46) + '" font-size="15" font-weight="700" fill="#0f172a">' + l[0] + '</text><text x="16" y="' + (y + 66) + '" font-size="12.5" fill="#475569">' + l[1] + '</text>'; });
+  function cy(lane) { return 10 + lane * LH + (LH - 6) / 2; }
+  var N = {
+    a: [0, 230, 'Opname op locatie', 'ruimtes, werk, lagen'],
+    b: [1, 230, 'Werkbon delen', 'met kantoor KBK'],
+    c: [1, 420, 'Inventarisatie', 'aanvragen bij bureau'],
+    d: [2, 420, 'Rapport komt binnen', 'via Outlook (PDF)'],
+    e: [2, 610, 'Koppeltool', 'koppelt op adres'],
+    f: [3, 830, 'AI vergelijkt', 'rapport ↔ werkbon'],
+    g: [4, 830, 'Deskundige', 'beoordeelt signalen'],
+    i: [0, 1095, 'Uitvoering', 'pas na akkoord']
+  };
+  var BW = 172, BH = 54;
+  function box(k, fill, stroke) { var n = N[k], x = n[1] - BW / 2, y = cy(n[0]) - BH / 2; return '<rect x="' + x + '" y="' + y + '" width="' + BW + '" height="' + BH + '" rx="10" fill="' + (fill || '#fff') + '" stroke="' + (stroke || '#1d4ed8') + '" stroke-width="2"/><text x="' + n[1] + '" y="' + (y + 22) + '" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">' + n[2] + '</text><text x="' + n[1] + '" y="' + (y + 40) + '" text-anchor="middle" font-size="11.5" fill="#475569">' + n[3] + '</text>'; }
+  function dia(x, y, t1, t2) { return '<path d="M' + x + ' ' + (y - 36) + 'L' + (x + 62) + ' ' + y + 'L' + x + ' ' + (y + 36) + 'L' + (x - 62) + ' ' + y + 'z" fill="#fff" stroke="#c2410c" stroke-width="2"/><text x="' + x + '" y="' + (y - 3) + '" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f172a">' + t1 + '</text><text x="' + x + '" y="' + (y + 13) + '" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f172a">' + t2 + '</text>'; }
+  function line(d, lbl, lx, ly) { return '<path d="' + d + '" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#ar)"/>' + (lbl ? '<text x="' + lx + '" y="' + ly + '" font-size="12" font-weight="700" fill="#334155">' + lbl + '</text>' : ''); }
+  var A = N.a, B = N.b, C = N.c, Dd = N.d, Ee = N.e, F = N.f, G = N.g, I = N.i;
+  s += line('M' + A[1] + ' ' + (cy(0) + BH / 2) + 'V' + (cy(1) - BH / 2 - 2));
+  s += line('M' + (B[1] + BW / 2) + ' ' + cy(1) + 'H' + (C[1] - BW / 2 - 2));
+  s += line('M' + C[1] + ' ' + (cy(1) + BH / 2) + 'V' + (cy(2) - BH / 2 - 2));
+  s += line('M' + (Dd[1] + BW / 2) + ' ' + cy(2) + 'H' + (Ee[1] - BW / 2 - 2));
+  // beslissing koppeling
+  var kx = 830, ky = cy(2);
+  s += line('M' + (Ee[1] + BW / 2) + ' ' + cy(2) + 'H' + (kx - 64));
+  s += line('M' + kx + ' ' + (ky + 36) + 'V' + (cy(3) - BH / 2 - 2), 'ja', kx + 8, ky + 52);
+  s += line('M' + (kx + 62) + ' ' + ky + 'H' + 950 + 'V' + (cy(1) + 18) + 'H' + 932, '', 0, 0);
+  s += '<text x="' + (kx + 70) + '" y="' + (ky - 8) + '" font-size="12" font-weight="700" fill="#334155">nee</text>';
+  s += '<rect x="' + (932 - 150) + '" y="' + (cy(1) - 4) + '" width="150" height="44" rx="10" fill="#fff" stroke="#64748b" stroke-width="2" stroke-dasharray="5 4"/><text x="' + (932 - 75) + '" y="' + (cy(1) + 15) + '" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f172a">Handmatig koppelen</text><text x="' + (932 - 75) + '" y="' + (cy(1) + 31) + '" text-anchor="middle" font-size="11" fill="#475569">door werkvoorbereider</text>';
+  s += line('M' + (932 - 150) + ' ' + (cy(1) + 18) + 'H' + 720 + 'V' + cy(3) + 'H' + (F[1] - BW / 2 - 2));
+  s += line('M' + F[1] + ' ' + (cy(3) + BH / 2) + 'V' + (cy(4) - BH / 2 - 2));
+  // beslissing deskundige
+  var qx = 1095, qy = cy(4);
+  s += line('M' + (G[1] + BW / 2) + ' ' + cy(4) + 'H' + (qx - 64));
+  s += line('M' + qx + ' ' + (qy - 36) + 'V' + (cy(0) + BH / 2 + 2), 'akkoord', qx + 8, cy(2) + 10);
+  s += line('M' + qx + ' ' + (qy + 36) + 'V' + (H - 4) + 'H' + Dd[1] + 'V' + (cy(2) + BH / 2 + 2), '', 0, 0);
+  s += '<text x="' + (Dd[1] + 10) + '" y="' + (H - 12) + '" font-size="12" font-weight="700" fill="#c2410c">aanvullend onderzoek of sanering nodig → nieuw (aanvullend) rapport</text>';
+  s += box('a') + box('b') + box('c') + box('d', '#fff', '#0a64c2') + box('e', '#fff', '#0a64c2') + box('f', '#fff', '#16a34a') + box('g', '#fff', '#b91c1c') + box('i', '#fff', '#16a34a');
+  s += dia(kx, ky, 'Werkbon', 'gevonden?') + dia(qx, qy, 'Akkoord', 'deskundige?');
+  s += '</svg>';
+  var steps = [
+    ['Opname op locatie', 'De projectbegeleider loopt de woning door en legt per ruimte vast wat er gebeurt: slopen, vervangen, boren. Ook de materialen en lagen die geraakt worden (tegellijm, onderlaag, koof).'],
+    ['Werkbon delen met kantoor', 'De opname wordt als werkbon (bijv. KBK-WB-2026-118) gedeeld met de werkvoorbereiding in Volendam. Het adres en de postcode zijn de sleutel.'],
+    ['Inventarisatie aanvragen', 'Kantoor vraagt bij een gecertificeerd bureau een asbestinventarisatie aan die past bij de geplande werkzaamheden.'],
+    ['Rapport via Outlook', 'Het bureau mailt het rapport (vaak 30 tot 50 pagina\'s) als PDF naar het KBK-adres.'],
+    ['Autonome koppeling', 'Een koppeltool (bijv. Power Automate) haalt de PDF uit de mail, leest adres, postcode en projectnummer en koppelt het rapport aan de juiste werkbon. Geen match? Dan krijgt de werkvoorbereider een taak om handmatig te koppelen.'],
+    ['AI-vergelijking', 'KBK AsbestCheck AI zet het rapport naast de werkbon: wat is onderzocht, asbesthoudend, niet-asbesthoudend of uitgesloten, welke materialen en lagen worden geraakt, en waar controle nodig is.'],
+    ['Deskundige beoordeelt', 'De signalen gaan naar een deskundige. Die beslist: aanvullend onderzoek, sanering door een gecertificeerd bedrijf, of akkoord. AI geeft nooit zelf een oordeel "veilig".'],
+    ['Uitvoering', 'Pas na akkoord van de deskundige wordt de werkbon vrijgegeven en start de uitvoering. Bij twijfel of onverwacht materiaal: werk stoppen en melden.']
+  ];
+  el.innerHTML = '<div class="card flow scroll">' + s + '</div><div class="steps">' + steps.map(function (x, i) { return '<div class="card step"><b><i>' + (i + 1) + '</i>' + esc(x[0]) + '</b><p>' + esc(x[1]) + '</p></div>'; }).join('') + '</div><p class="muted" style="margin:14px 2px 24px">Tijdwinst: de projectbegeleider hoeft niet zelf 35 pagina\'s door te lezen; AI zet de relevante bronnen per werkzaamheid klaar en wijst aan waar het rapport tekortschiet. De deskundige blijft verantwoordelijk.</p>';
+}
+
+/* ---------- account & instellingen ---------- */
+function renderAccount() {
+  var r = ROLES[USER || 'pb'];
+  $('#view-account').innerHTML = '<div class="card set"><h2>' + esc(r.naam) + '</h2><p>' + esc(r.email) + '<br><span class="muted">KBK Bouwgroep, Volendam • ' + esc(r.taak) + ' (demo-account)</span></p><button class="btn" id="accOut">Uitloggen / andere rol</button></div><div class="card set"><h2>Privacy</h2><p class="muted">Vergelijkingen worden in je browser gemaakt. De dossiervoortgang wordt alleen in deze browser bewaard.</p></div>';
+  $('#accOut').onclick = logout;
+}
+function renderSettings() {
+  var el = $('#view-instellingen'); if (!el) return;
+  var av = S.sample ? 'Claude is beschikbaar in deze weergave.' : 'Claude is hier niet beschikbaar (bijv. offline bestand). De lokale analyse wordt gebruikt.';
+  el.innerHTML = '<div class="card set"><h2>AI-modus</h2><label><input type="radio" name="ai" value="auto"' + (S.aiMode === 'auto' ? ' checked' : '') + '><span><b>Automatisch</b><br><span class="muted">Claude leest onbekende rapporten en beantwoordt vragen. Zonder Claude valt de app terug op de lokale analyse.</span></span></label><label><input type="radio" name="ai" value="local"' + (S.aiMode === 'local' ? ' checked' : '') + '><span><b>Alleen lokaal</b><br><span class="muted">Er gaat niets naar buiten. Bekende rapporten en de vergelijking werken volledig; onbekende rapporten worden met tekstherkenning gelezen.</span></span></label><p class="muted">' + esc(av) + '</p></div>' +
+    '<div class="card set"><h2>Privacy</h2><p class="muted">PDF\'s worden in de browser gelezen en niet opgeslagen. In de modus Automatisch wordt de tekst van een onbekend rapport naar Claude gestuurd om te analyseren.</p></div><div class="card set"><h2>Demo terugzetten</h2><p class="muted">Zet alle dossiers en de inbox terug naar de beginstand, bijvoorbeeld vóór de presentatie.</p><button class="btn" id="resetDemo">Demo terugzetten</button> <span id="resetOk" class="status"></span></div><div class="card set"><h2>Uitgangspunt</h2><p class="muted">KBK AsbestCheck AI signaleert en verwijst door. Het geeft nooit een oordeel dat iets veilig is. De deskundige bepaalt de vervolgstap.</p></div>';
+  var rd = $('#resetDemo'); if (rd) rd.onclick = function () { P = seed(); saveP(); OP = null; $('#resetOk').textContent = 'Teruggezet.'; };
+  el.querySelectorAll('input[name=ai]').forEach(function (r) { r.onchange = function () { S.aiMode = r.value; try { localStorage.setItem('kbk-ai', r.value); } catch (e) {} renderSettings(); }; });
+}
+
+function renderAll() { renderSlots(); renderResult(); renderChips(); }
+function scrollToResult() { var r = $('#result'); if (r) r.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+
+/* ---------- start ---------- */
+loadP();
+loadCase('meidoorn');
+userSay('Welke geplande werkzaamheden staan er op de werkbon, en welke asbestbronnen zijn daarbij relevant?');
+botSay(localAnswer('Welke geplande werkzaamheden staan er op de werkbon', S.v));
+var saved = null; try { saved = sessionStorage.getItem('kbk-user'); } catch (e) {}
+if (saved && ROLES[saved]) login(saved); else renderLogin();
+}
+
+</script>
+</html>

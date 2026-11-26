@@ -1,0 +1,72 @@
+<title>KBK AsbestCheck AI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>/*CSS*/</style>
+<div class="app">
+  <aside class="side">
+    <div class="logo">
+      <svg width="72" height="64" viewBox="0 0 72 64" aria-hidden="true"><path d="M8 30 L34 8 L60 30" fill="none" stroke="#2f6bf2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M46 12 v-5 h8 v13" fill="none" stroke="#2f6bf2" stroke-width="5" stroke-linejoin="round"/><path d="M14 27 v28 h22" fill="none" stroke="#2f6bf2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 34 l10 8 M32 34 l-6 5" stroke="#2f6bf2" stroke-width="4" stroke-linecap="round"/><path d="M38 44 l9 9 l19 -21" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><b>KBK</b><span>AsbestCheck <i>AI</i></span></div>
+    </div>
+    <nav class="nav" id="nav">
+      <button data-view="analyse" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6M9 15h6"/></svg><span>Nieuwe analyse</span></button>
+      <button data-view="dossiers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M8 13l2.5 2.5L16 11"/></svg><span>Dossiers</span></button>
+      <button data-view="opname"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg><span>Opname (werkbon)</span></button>
+      <button data-view="rapporten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg><span>Inbox rapporten</span></button>
+      <button data-view="proces"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="5" rx="1"/><rect x="14" y="10" width="7" height="5" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/><path d="M6.5 8v8M10 5.5h4a3 3 0 0 1 3 3V10M17.5 15v3.5H10"/></svg><span>Werkproces</span></button>
+      <button data-view="account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Account</span></button>
+      <button data-view="instellingen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Instellingen</span></button>
+    </nav>
+    <div class="safe">
+      <svg width="30" height="34" viewBox="0 0 24 28"><path d="M12 1 L22 5 v8 c0 7-4.5 11.5-10 14 C6.5 24.5 2 20 2 13 V5z" fill="#22c55e"/><path d="M7.5 13.5 l3 3 l6-6.5" fill="none" stroke="#0f1a2e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><b>Uw gegevens zijn veilig</b><small>PDF wordt niet opgeslagen</small></div>
+    </div>
+  </aside>
+
+  <main>
+    <header class="top">
+      <div><h1 id="title">Vergelijking &amp; Advies</h1><p id="sub">Asbestinventarisatierapport vergelijken met de KBK-opname (werkbon)</p></div>
+      <div class="user"><button class="ubtn" id="userBtn" type="button"><span class="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4.5"/><path d="M3 22a9 9 0 0 1 18 0z"/></svg></span><span class="mail-t">raphael@example.com</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg></button><div class="umenu card" id="userMenu" hidden><b id="roleT">Projectbegeleider</b><button class="btn sm" id="logoutBtn" type="button">Uitloggen / andere rol</button></div></div>
+    </header>
+
+    <!-- NIEUWE ANALYSE -->
+    <section class="view on" id="view-analyse">
+      <div class="uploads">
+        <div id="slot-rapport"></div>
+        <div class="vs">VS</div>
+        <div id="slot-werkbon"></div>
+      </div>
+      <div class="koppel hidden" id="koppel"></div>
+      <div id="result"></div>
+      <div class="chat" id="chat"></div>
+      <div class="composer">
+        <div class="chips" id="chips"></div>
+        <form class="comp" id="ask">
+          <label class="attach" title="PDF toevoegen (rapport of werkbon)"><input type="file" id="attachFile" accept="application/pdf" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.1l-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg></label>
+          <input type="text" id="q" placeholder="Stel een nieuwe vraag..." autocomplete="off">
+          <button class="send" id="sendBtn" type="submit"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg><span>Verstuur</span></button>
+        </form>
+      </div>
+    </section>
+
+    <!-- DOSSIERS -->
+    <section class="view" id="view-dossiers"></section>
+    <!-- OPNAME -->
+    <section class="view" id="view-opname"></section>
+    <!-- RAPPORTEN -->
+    <section class="view" id="view-rapporten"></section>
+    <!-- WERKPROCES -->
+    <section class="view" id="view-proces"></section>
+    <!-- ACCOUNT -->
+    <section class="view" id="view-account"></section>
+    <!-- INSTELLINGEN -->
+    <section class="view" id="view-instellingen"></section>
+  </main>
+</div>
+<div id="login" class="login" hidden></div>
+<input type="file" id="fileR" accept="application/pdf" hidden>
+<input type="file" id="fileW" accept="application/pdf" hidden>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script>/*JS*/</script>
