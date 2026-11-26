@@ -519,6 +519,7 @@ function renderDossiers() {
   var el = $('#view-dossiers'); if (!el) return;
   var mine = P.dossiers.filter(mijnBeurt).length;
   var h = '<div class="summary">' + IC.scales + '<div><b>Ingelogd als ' + esc(ROLES[USER].naam) + '.</b> ' + esc(ROLES[USER].taak) + '. ' + (mine ? 'Er ' + (mine === 1 ? 'staat 1 dossier' : 'staan ' + mine + ' dossiers') + ' op jou te wachten.' : 'Er wacht nu niets op jou.') + '</div></div>';
+  h += '<div class="dbar"><span class="muted">' + P.dossiers.length + ' dossiers</span><button class="btn pri sm" id="nieuwTest">+ Nieuw testdossier</button></div>';
   h += P.dossiers.map(function (d) {
     var w = d.werkbon, b = d.besluit ? BESLUIT[d.besluit] : null, wacht = AAN_ZET[d.stap];
     return '<div class="card dossier' + (mijnBeurt(d) ? ' mine' : '') + '"><div class="dhead"><div><b>' + esc(w.adres) + '</b><small>' + esc(w.nr) + ' • ' + esc(w.soort) + ' • projectbegeleider ' + esc(w.projectbegeleider) + '</small></div><div class="row">' +
@@ -528,6 +529,15 @@ function renderDossiers() {
   }).join('');
   h += '<p class="muted" style="margin:14px 2px 24px">Tip voor de presentatie: start de rondleiding (inlogscherm of Instellingen), dan word je stap voor stap langs alle rollen geleid. Wissel van rol via je naam rechtsboven. De voortgang blijft bewaard in deze browser; terugzetten kan bij Instellingen.</p>';
   el.innerHTML = h;
+  $('#nieuwTest').onclick = nieuwTestdossier;
+}
+function nieuwTestdossier() {
+  P.teller = (P.teller || 0) + 1;
+  var bron = D.WERKBONNEN[(P.teller - 1) % D.WERKBONNEN.length], w = JSON.parse(JSON.stringify(bron));
+  w.nr = 'KBK-WB-2026-' + (200 + P.teller); w.opnamedatum = E.fmt(new Date());
+  P.dossiers.unshift({ nr: w.nr, werkbon: w, stap: 0, rapportKey: null, rapport: null, besluit: null, opmerking: '', log: [{ t: nu(), wie: w.projectbegeleider + ' (projectbegeleider)', wat: 'Opname gemaakt op locatie (testdossier)' }] });
+  if (P.tour) P.tour = w.nr;
+  saveP(); renderDossiers(); toast('Testdossier ' + w.nr + ' (' + w.adres.split(',')[0] + ') staat klaar bij de projectbegeleider.');
 }
 document.addEventListener('click', function (e) {
   var b = e.target.closest('[data-act]'); if (!b) return;

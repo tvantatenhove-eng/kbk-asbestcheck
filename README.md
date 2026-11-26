@@ -21,6 +21,8 @@ Elke rol ziet zijn eigen tabblad. Dit is een demo-login zonder echte beveiliging
 
 Klik op het inlogscherm op **Rondleiding starten**. De app zet de demo op de beginstand en leidt je stap voor stap langs alle rollen, met een balk onderin die zegt wat je moet doen.
 
+Blijven testen? Klik bij Dossiers op **+ Nieuw testdossier**: er komt een nieuwe opname klaar te staan bij de projectbegeleider (de adressen wisselen). Alles terug naar het begin kan bij Instellingen, Demo terugzetten. Elke browser heeft zijn eigen demo, dus testen van de een heeft geen invloed op de ander.
+
 ## Het proces (zo veel mogelijk automatisch)
 
 1. **Projectbegeleider** neemt de werkzaamheden op in het tabblad Opname en deelt met één klik.
