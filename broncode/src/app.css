@@ -308,3 +308,9 @@ body:has(.tour:not([hidden])) main{padding-bottom:140px}
 #flowSvg.play .fb.on rect:first-child{stroke-width:4}
 .agent{overflow-wrap:anywhere}
 .dhead>.pill{align-self:flex-start}
+/* altijd licht, ook als Safari/macOS in donkere modus staat */
+html{color-scheme:light only;background:var(--bg)}
+input,textarea,select{background-color:#fff;color:#0f172a;color-scheme:light}
+input::placeholder,textarea::placeholder{color:#94a3b8}
+input[type=checkbox],input[type=radio]{accent-color:var(--blue);color-scheme:light}
+.ml-win input,.ml-win textarea{background:#fff!important;color:#0f172a!important;-webkit-text-fill-color:#0f172a}
