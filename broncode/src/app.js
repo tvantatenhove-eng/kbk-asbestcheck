@@ -477,7 +477,7 @@ function nu() { var d = new Date(); return E.fmt(d) + ' ' + ('0' + d.getHours())
 function bureauVan(key) { return { meidoorn: 'Noord-Holland Inspecties (fictief)', teststraat: 'J. Voorbeeld (fictief)', valerius: 'Van Santen Advies', smalthof: 'SGI Compliance Consultancy', struisgras: 'SSBA B.V.' }[key] || 'Inventarisatiebureau'; }
 function seed() {
   var stap = { meidoorn: 0, teststraat: 6, valerius: 6, smalthof: 7, struisgras: 7 };
-  var p = { dossiers: [], mails: [] };
+  var p = { v: 2, dossiers: [], mails: [] };
   D.WERKBONNEN.forEach(function (w) {
     var s = stap[w.key], log = [{ t: w.opnamedatum, wie: w.projectbegeleider + ' (projectbegeleider)', wat: 'Opname gemaakt op locatie' }];
     if (s >= 1) log.push({ t: w.opnamedatum, wie: w.projectbegeleider + ' (projectbegeleider)', wat: 'Werkbon gedeeld met kantoor' });
@@ -496,7 +496,7 @@ function seed() {
   return p;
 }
 function saveP() { renderTour(); try { localStorage.setItem('kbk-proces', JSON.stringify(P)); } catch (e) {} }
-function loadP() { try { P = JSON.parse(localStorage.getItem('kbk-proces')); } catch (e) { P = null; } if (!P || !P.dossiers) { P = seed(); saveP(); } }
+function loadP() { try { P = JSON.parse(localStorage.getItem('kbk-proces')); } catch (e) { P = null; } if (!P || !P.dossiers || P.v !== 2) { P = seed(); saveP(); } }
 function dos(nr) { return P.dossiers.filter(function (d) { return d.nr === nr; })[0]; }
 function logD(d, wat) { d.log.push({ t: nu(), wie: USER ? ROLES[USER].wie : '-', wat: wat }); }
 function rapportVan(d) { if (d.rapport) return d.rapport; var r = D.RAPPORTEN.filter(function (x) { return x.key === d.rapportKey; })[0]; if (!r) return null; r = JSON.parse(JSON.stringify(r)); r.methode = 'bekend'; return r; }
